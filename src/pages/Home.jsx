@@ -17,7 +17,7 @@ const initialBooks = [
   { id: 5, title: "Harry Potter y la Cámara Secreta", author: "J.K. Rowling", price: 10500, image: "/assets/hp2.jpg", description: "Una nueva amenaza acecha a los estudiantes de Hogwarts." },
   { id: 6, title: "Harry Potter y el Prisionero de Azkaban", author: "J.K. Rowling", price: 11000, image: "/assets/hp3.jpg", description: "Harry enfrenta el peligroso misterio de Sirius Black." },
   { id: 7, title: "Harry Potter y el Cáliz de Fuego", author: "J.K. Rowling", price: 12000, image: "/assets/hp4.jpg", description: "Harry participa en el Torneo de los Tres Magos." },
-  { id: 8, title: "Harry Potter y la Orden del Fénix", author: "J.K. Rowling", price: 12500, image: "/assets/hp5.jpg", description: "La resistencia contra Voldemort comienza a fortalecerse." },
+  { id: 8, title: "Harry Potter y la Orden del Fénix", author: "J.K. Rowling", price: 12500, image: "/assets/ordenfenix.png", description: "La resistencia contra Voldemort comienza a fortalecerse." },
   { id: 9, title: "Harry Potter y el Misterio del Príncipe", author: "J.K. Rowling", price: 13000, image: "/assets/hp6.jpg", description: "Harry descubre secretos oscuros sobre Voldemort." }
 ];
 

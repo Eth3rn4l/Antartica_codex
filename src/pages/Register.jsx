@@ -12,6 +12,7 @@ function Register() {
     telefono: '',
     region: '',
     comuna: '',
+    rut: '', // Añadido el campo RUT
   });
 
   // Estado para almacenar los errores de validación por campo
@@ -44,6 +45,32 @@ function Register() {
       newErrors.telefono = 'Teléfono inválido. Debe iniciar con +569 y tener 9 dígitos';
     }
 
+    // Validación del RUT chileno
+    const validateRut = (rut) => {
+      const cleanRut = rut.replace(/[^\dkK]/g, '').toUpperCase();
+      if (cleanRut.length < 8 || cleanRut.length > 9) return false;
+
+      const body = cleanRut.slice(0, -1);
+      const verifier = cleanRut.slice(-1);
+
+      let sum = 0;
+      let multiplier = 2;
+
+      for (let i = body.length - 1; i >= 0; i--) {
+        sum += parseInt(body[i]) * multiplier;
+        multiplier = multiplier === 7 ? 2 : multiplier + 1;
+      }
+
+      const mod = 11 - (sum % 11);
+      const expectedVerifier = mod === 11 ? '0' : mod === 10 ? 'K' : mod.toString();
+
+      return verifier === expectedVerifier;
+    };
+
+    if (!validateRut(formData.rut)) {
+      newErrors.rut = 'RUT inválido';
+    }
+
     // Actualiza el estado de errores
     setErrors(newErrors);
 
@@ -72,6 +99,7 @@ function Register() {
         telefono: '',
         region: '',
         comuna: '',
+        rut: '', // Añadido el campo RUT
       });
     }
   };
@@ -82,7 +110,7 @@ function Register() {
       <h2 style={titleStyle}>Registro de Usuario</h2>
       <form onSubmit={handleSubmit} style={formStyle}>
         {/* Recorre los campos del formulario para generar inputs */}
-        {["nombre","apellido","email","password","confirmPassword","telefono","region","comuna"].map((field) => (
+        {["nombre", "apellido", "email", "password", "confirmPassword", "telefono", "region", "comuna", "rut"].map((field) => (
           <div key={field} style={inputContainerStyle}>
             <input
               type={field.includes("password") ? "password" : "text"} // Si es password, oculta los caracteres
