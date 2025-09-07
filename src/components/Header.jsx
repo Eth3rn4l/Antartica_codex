@@ -70,6 +70,8 @@ function Header() {
         <div style={menuStyle}>
           <Link style={linkStyle} to="/login">Login</Link>
           <Link style={linkStyle} to="/register">Registro</Link>
+          <Link style={linkStyle} to="/ayuda">Ayuda</Link>        {/* Nuevo link */}
+          <Link style={linkStyle} to="/contact">Contacto</Link>  {/* Nuevo link */}
         </div>
       )}
     </header>

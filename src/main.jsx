@@ -7,6 +7,8 @@ import Home from './pages/Home';
 import Cart from './components/Cart';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import Ayuda from './pages/Ayuda';
+import Contact from './pages/Contact';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -17,6 +19,9 @@ createRoot(document.getElementById('root')).render(
         <Route path="/cart" element={<Cart />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/ayuda" element={<Ayuda />} /> {/* <--- Ruta */}
+        <Route path="/contact" element={<Contact />} /> {/* <--- Ruta */}
+        
       </Routes>
     </BrowserRouter>
   </StrictMode>
