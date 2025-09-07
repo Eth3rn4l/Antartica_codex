@@ -10,15 +10,15 @@ import './Home.css';                                  // CSS del carousel horizo
 // Cada libro tiene id, título, autor, precio, imagen y descripción
 // ===========================================
 const initialBooks = [
-  { id: 1, title: "Cien Años de Soledad", author: "Gabriel García Márquez", price: 12000, image: "/assets/libro1.jpg", description: "Una novela mágica y realista sobre la familia Buendía." },
-  { id: 2, title: "El Principito", author: "Antoine de Saint-Exupéry", price: 8000, image: "/assets/libro2.jpg", description: "Un clásico cuento filosófico sobre la vida y la amistad." },
-  { id: 3, title: "1984", author: "George Orwell", price: 15000, image: "/assets/libro3.jpg", description: "Una novela distópica sobre vigilancia y control totalitario." },
-  { id: 4, title: "Harry Potter y la Piedra Filosofal", author: "J.K. Rowling", price: 10000, image: "/assets/hp1.jpg", description: "El inicio de la saga donde Harry descubre que es un mago." },
-  { id: 5, title: "Harry Potter y la Cámara Secreta", author: "J.K. Rowling", price: 10500, image: "/assets/hp2.jpg", description: "Una nueva amenaza acecha a los estudiantes de Hogwarts." },
-  { id: 6, title: "Harry Potter y el Prisionero de Azkaban", author: "J.K. Rowling", price: 11000, image: "/assets/hp3.jpg", description: "Harry enfrenta el peligroso misterio de Sirius Black." },
-  { id: 7, title: "Harry Potter y el Cáliz de Fuego", author: "J.K. Rowling", price: 12000, image: "/assets/hp4.jpg", description: "Harry participa en el Torneo de los Tres Magos." },
+  { id: 1, title: "Cien Años de Soledad", author: "Gabriel García Márquez", price: 12000, image: "/assets/cienanos.png", description: "Una novela mágica y realista sobre la familia Buendía." },
+  { id: 2, title: "El Principito", author: "Antoine de Saint-Exupéry", price: 8000, image: "/assets/principito.png", description: "Un clásico cuento filosófico sobre la vida y la amistad." },
+  { id: 3, title: "1984", author: "George Orwell", price: 15000, image: "/assets/1984.png", description: "Una novela distópica sobre vigilancia y control totalitario." },
+  { id: 4, title: "Harry Potter y la Piedra Filosofal", author: "J.K. Rowling", price: 10000, image: "/assets/piedrafil.png", description: "El inicio de la saga donde Harry descubre que es un mago." },
+  { id: 5, title: "Harry Potter y la Cámara Secreta", author: "J.K. Rowling", price: 10500, image: "/assets/camarasecreta.png", description: "Una nueva amenaza acecha a los estudiantes de Hogwarts." },
+  { id: 6, title: "Harry Potter y el Prisionero de Azkaban", author: "J.K. Rowling", price: 11000, image: "/assets/azkaban.png", description: "Harry enfrenta el peligroso misterio de Sirius Black." },
+  { id: 7, title: "Harry Potter y el Cáliz de Fuego", author: "J.K. Rowling", price: 12000, image: "/assets/calizdefuego.png", description: "Harry participa en el Torneo de los Tres Magos." },
   { id: 8, title: "Harry Potter y la Orden del Fénix", author: "J.K. Rowling", price: 12500, image: "/assets/ordenfenix.png", description: "La resistencia contra Voldemort comienza a fortalecerse." },
-  { id: 9, title: "Harry Potter y el Misterio del Príncipe", author: "J.K. Rowling", price: 13000, image: "/assets/hp6.jpg", description: "Harry descubre secretos oscuros sobre Voldemort." }
+  { id: 9, title: "Harry Potter y el Misterio del Príncipe", author: "J.K. Rowling", price: 13000, image: "/assets/misprince.png", description: "Harry descubre secretos oscuros sobre Voldemort." }
 ];
 
 // ===========================================
