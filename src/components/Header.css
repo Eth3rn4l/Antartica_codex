@@ -2,37 +2,58 @@
    Contenedor principal del input y el ícono
    =========================================== */
    .group {
-    display: flex;                  /* Contenedor flexible para alinear hijos en fila. */
-    line-height: 28px;              /* Altura de línea para el contenido dentro del grupo. */
-    align-items: center;            /* Centra verticalmente los elementos hijos dentro del flex. */
-    position: relative;             /* Permite posicionar elementos hijos absolutamente respecto a este contenedor. */
-    max-width: 190px;               /* Limita el ancho máximo del grupo a 190px. */
+    display: flex;
+    line-height: 28px;
+    align-items: center;
+    position: relative;
+    max-width: 800px; /* Limita el ancho máximo del grupo a 800px. */
+    width: 100%;
 }
 
 /* ===========================================
    Estilo del campo de entrada
    =========================================== */
-.input {
-    font-family: "Montserrat", sans-serif;          /* Fuente tipográfica del texto dentro del input. */
-    width: 100%;                                    /* Ocupa todo el ancho del contenedor padre. */
-    height: 45px;                                   /* Altura fija del input. */
-    padding-left: 2.5rem;                           /* Espacio interno a la izquierda, para dejar espacio para el ícono. */
-    box-shadow: 0 0 0 1.5px #2b2c37, 0 0 25px -17px #000; /* Sombras externas para un efecto 3D sutil. */
-    border: 0;                                      /* Elimina borde predeterminado del navegador. */
-    border-radius: 12px;                            /* Bordes redondeados del input. */
-    background-color: #16171d;                      /* Color de fondo oscuro del input. */
-    outline: none;                                  /* Quita el contorno azul por defecto al hacer foco. */
-    color: #bdbecb;                                 /* Color del texto dentro del input. */
-    transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1); /* Animación suave para cambios de estilo (hover, focus, active). */
-    cursor: text;                                   /* Cambia el cursor a tipo texto al pasar sobre el input. */
-    z-index: 0;                                     /* Define el orden de apilamiento respecto a otros elementos. */
+
+body.dark-mode .input {
+    font-family: "Montserrat", sans-serif;
+    width: 100%;
+    height: 45px;
+    padding-left: 2.5rem;
+    box-shadow: none;
+    border: none;
+    border-radius: 0;
+    background-color: #16171d;
+    outline: none;
+    color: #bdbecb;
+    transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
+    cursor: text;
+    z-index: 0;
+}
+
+body.light-mode .input {
+    font-family: "Montserrat", sans-serif;
+    width: 100%;
+    height: 45px;
+    padding-left: 2.5rem;
+    box-shadow: none;
+    border: none;
+    border-radius: 0;
+    background-color: #f4f4f5;
+    outline: none;
+    color: #333;
+    transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
+    cursor: text;
+    z-index: 0;
 }
 
 /* ===========================================
    Estilo del placeholder
    =========================================== */
-.input::placeholder {
-    color: #bdbecb;   /* Color del texto placeholder, que aparece antes de escribir. */
+body.dark-mode .input::placeholder {
+    color: #bdbecb;
+}
+body.light-mode .input::placeholder {
+    color: #888;
 }
 
 /* ===========================================
@@ -59,12 +80,21 @@
 /* ===========================================
    Ícono de búsqueda dentro del input
    =========================================== */
-.search-icon {
-    position: absolute;       /* Posición absoluta dentro del contenedor .group. */
-    left: 1rem;               /* Separación desde el borde izquierdo del contenedor. */
-    fill: #bdbecb;            /* Color del ícono (para SVGs). */
-    width: 1rem;              /* Ancho del ícono. */
-    height: 1rem;             /* Alto del ícono. */
-    pointer-events: none;     /* Ignora los eventos del mouse para que el input reciba el clic. */
-    z-index: 1;               /* Se asegura que el ícono quede por encima del input. */
+body.dark-mode .search-icon {
+    position: absolute;
+    left: 1rem;
+    fill: #bdbecb;
+    width: 1rem;
+    height: 1rem;
+    pointer-events: none;
+    z-index: 1;
+}
+body.light-mode .search-icon {
+    position: absolute;
+    left: 1rem;
+    fill: #888;
+    width: 1rem;
+    height: 1rem;
+    pointer-events: none;
+    z-index: 1;
 }

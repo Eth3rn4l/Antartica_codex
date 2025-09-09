@@ -1,81 +1,92 @@
 // Importación de dependencias
 import React, { useState } from "react";       // React y hook useState para manejar estado local
 import { Link } from "react-router-dom";       // Componente Link para navegación sin recargar la página
+import SidebarCategorias from "./SidebarCategorias";
+import "./SearchInline.css";
 import "./Header.css";                         // Importación del CSS que contiene estilos para el header, input y buscador
 
 // Componente funcional Header
 function Header() {
-  // Estados internos del Header
-  const [menuOpen, setMenuOpen] = useState(false); // Controla si el menú hamburguesa está abierto o cerrado
-  const [cartItems, setCartItems] = useState(0);   // Número de items en el carrito
-  const [searchText, setSearchText] = useState(""); // Texto ingresado en el buscador
-
-  // Función para manejar búsqueda
-  const handleSearch = () => {
-    console.log("Buscar:", searchText); // Muestra en consola el texto buscado
-    // Aquí se puede agregar lógica para filtrar resultados o redirigir a otra página
-  };
-
+  const [menuOpen, setMenuOpen] = useState(false);
+  const closeTimeout = React.useRef();
+  const [cartItems, setCartItems] = useState(0);
+  const [darkMode, setDarkMode] = useState(false);
+  const logoUrl = '/assets/logo.png';
   return (
-    <header style={headerStyle}>
-      {/* Bloque de navegación principal */}
-      <nav style={navStyle}>
-        <Link style={linkStyle} to="/">Home</Link> {/* Link a la página principal */}
-      </nav>
-
-      {/* Buscador centrado */}
-      <div style={searchContainerStyle}>
-        <div className="group">
-          {/* Ícono de búsqueda SVG */}
-          <svg
-            className="search-icon"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-          >
-            <path d="M21.71 20.29l-3.388-3.388A7.935 7.935 0 0016 10a8 8 0 10-8 8 7.935 7.935 0 006.902-3.098l3.388 3.388a1 1 0 001.414-1.414zM10 16a6 6 0 110-12 6 6 0 010 12z"/>
-          </svg>
-
-          {/* Input de búsqueda */}
-          <input
-            type="text"
-            placeholder="Buscar..."
-            className="input"
-            value={searchText}                       // Valor controlado por el estado
-            onChange={(e) => setSearchText(e.target.value)} // Actualiza estado al escribir
-            onKeyDown={(e) => e.key === "Enter" && handleSearch()} // Ejecuta búsqueda al presionar Enter
-          />
+      <header style={headerStyle}>
+    <div style={{ width: '100%' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '2rem', width: '100%' }}>
+            <Link to="/">
+              <img src={logoUrl} alt="Logo" style={{ height: '50px' }} />
+            </Link>
+            <div style={{ marginLeft: '1rem', display: 'flex', alignItems: 'center' }}>
+              <SidebarCategorias horizontal={true} />
+            </div>
+            <div className="content-inline" style={{ flex: 1 }}>
+              <div className="search-inline">
+                <input name="txtSearch" className="search-inline--input" placeholder="Buscar" />
+              </div>
+            </div>
+            <Link to="/cart" style={cartIconContainer}>
+              🛒
+              {cartItems > 0 && <span style={cartCountStyle}>{cartItems}</span>}
+            </Link>
+            <div
+              style={{ position: 'relative', display: 'inline-block' }}
+              onMouseEnter={() => {
+                clearTimeout(closeTimeout.current);
+                setMenuOpen(true);
+              }}
+              onMouseLeave={() => {
+                closeTimeout.current = setTimeout(() => setMenuOpen(false), 250);
+              }}
+            >
+              <div
+                style={hamburgerStyle}
+                onClick={() => setMenuOpen(!menuOpen)}
+              >
+                ☰
+              </div>
+              {menuOpen && (
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: '100%',
+                    right: 0,
+                    background: '#fff',
+                    color: '#213547',
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.07)',
+                    border: '1px solid #194C57',
+                    minWidth: '180px',
+                    maxHeight: '350px',
+                    overflowY: 'auto',
+                    zIndex: 99999,
+                    margin: 0,
+                    padding: '0.5rem 0',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    borderRadius: '10px',
+                  }}
+                  onMouseEnter={() => {
+                    clearTimeout(closeTimeout.current);
+                    setMenuOpen(true);
+                  }}
+                  onMouseLeave={() => {
+                    closeTimeout.current = setTimeout(() => setMenuOpen(false), 250);
+                  }}
+                >
+                  <Link style={{ ...linkStyle, color: '#213547', padding: '0.5rem 1rem', textAlign: 'left' }} to="/login">Login</Link>
+                  <Link style={{ ...linkStyle, color: '#213547', padding: '0.5rem 1rem', textAlign: 'left' }} to="/register">Registro</Link>
+                  <Link style={{ ...linkStyle, color: '#213547', padding: '0.5rem 1rem', textAlign: 'left' }} to="/sobrenosotros">Sobre Nosotros</Link>
+                  <Link style={{ ...linkStyle, color: '#213547', padding: '0.5rem 1rem', textAlign: 'left' }} to="/ayuda">Ayuda</Link>
+                  <Link style={{ ...linkStyle, color: '#213547', padding: '0.5rem 1rem', textAlign: 'left' }} to="/contact">Contacto</Link>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
-      </div>
-
-      {/* Bloque derecho: carrito y menú hamburguesa */}
-      <div style={rightBlockStyle}>
-        {/* Ícono de carrito */}
-        <Link to="/cart" style={cartIconContainer}>
-          🛒
-          {/* Contador de items en carrito */}
-          {cartItems > 0 && <span style={cartCountStyle}>{cartItems}</span>}
-        </Link>
-
-        {/* Menú hamburguesa */}
-        <div
-          style={hamburgerStyle}
-          onClick={() => setMenuOpen(!menuOpen)} // Alterna estado del menú
-        >
-          ☰
-        </div>
-      </div>
-
-      {/* Menú desplegable (solo visible si menuOpen = true) */}
-      {menuOpen && (
-        <div style={menuStyle}>
-          <Link style={linkStyle} to="/login">Login</Link>
-          <Link style={linkStyle} to="/register">Registro</Link>
-          <Link style={linkStyle} to="/ayuda">Ayuda</Link>        {/* Nuevo link */}
-          <Link style={linkStyle} to="/contact">Contacto</Link>  {/* Nuevo link */}
-        </div>
-      )}
-    </header>
-  );
+      </header>
+    );
 }
 
 /* ===========================================
@@ -84,7 +95,7 @@ function Header() {
 
 const headerStyle = {
   padding: "1rem",
-  backgroundColor: "#0077b6",
+  backgroundColor: "#194C57",
   position: "relative",
   display: "flex",
   justifyContent: "space-between",
@@ -102,11 +113,12 @@ const rightBlockStyle = {
   gap: "1rem", // Separación entre carrito y hamburguesa
 };
 
-const hamburgerStyle = {
-  fontSize: "28px",
-  cursor: "pointer",
-  color: "white",
-};
+    const hamburgerStyle = {
+      fontSize: "28px",
+      cursor: "pointer",
+      color: "white",
+      letterSpacing: '0.2em', // Alarga las líneas
+    };
 
 const menuStyle = {
   display: "flex",
@@ -114,7 +126,7 @@ const menuStyle = {
   position: "absolute",
   top: "60px",
   right: "10px",
-  background: "#023e8a",
+  background: "#194C57",
   padding: "1rem",
   borderRadius: "8px",
 };

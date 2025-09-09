@@ -1,16 +1,32 @@
-:root {
+body {
+  background: #f4f4f5;
+  color: #213547;
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #A8E0ED;
-
+}
+a {
+  color: #194C57;
+}
+button {
+  background-color: #194C57;
+  color: #fff;
+}
+  --color-text-dark: #fafeff;
+  --color-primary: #194C57;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+body.light-mode {
+  background: var(--color-bg-light);
+  color: var(--color-text-light);
+}
+body.dark-mode {
+  background: var(--color-bg-dark);
+  color: var(--color-text-dark);
 }
 
 a {
@@ -27,9 +43,6 @@ body {
   padding: 0;
   min-width: 320px;
   min-height: 100vh;
-  background-color: #EBFCFC
-;
-  color: sandybrown;
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
 }
 

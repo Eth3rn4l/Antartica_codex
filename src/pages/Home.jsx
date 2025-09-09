@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import BookCard from '../components/BookCard';        // Componente que muestra un libro con flip card
 import CommentForm from '../components/CommentForm';  // Formulario para agregar comentarios
 import Cart from '../components/Cart';                // Carrito de compras
+import SidebarCategorias from '../components/SidebarCategorias'; // Menú lateral de categorías
 import './Home.css';                                  // CSS del carousel horizontal y otros estilos
 
 // ===========================================
@@ -43,38 +44,71 @@ function Home() {
   const handleNewComment = (commentData) => setComments([...comments, commentData]);
 
   return (
-    <div style={containerStyle}>
+    <div style={{ ...containerStyle, position: 'relative' }}>
       {/* ===========================================
           Carousel horizontal con título "Recién llegados"
           =========================================== */}
-      <div className="carousel-container">
-        <h2 className="carousel-title">Recién llegados</h2>
+  <div className="carousel-container" style={{ margin: '7rem 0' }}>
+  <h2 className="carousel-title" style={{ color: '#194C57' }}>Recién llegados</h2>
         <div className="horizontal-carousel">
-          <div className="carousel-track">
-            {/* Se duplican los libros para que el scroll infinito sea continuo */}
-            {[...initialBooks, ...initialBooks].map((book, idx) => (
+          <div className="carousel-track" style={{ width: `${initialBooks.length * 6 * 160}px` }}>
+            {[...initialBooks, ...initialBooks, ...initialBooks, ...initialBooks, ...initialBooks, ...initialBooks].map((book, idx) => (
               <div key={idx} className="carousel-item">
                 <img src={book.image} alt={book.title} />
+                <h3 style={{ color: '#194C57', textAlign: 'center', fontSize: '1.1rem', marginTop: '0.5rem' }}>{book.title}</h3>
               </div>
             ))}
           </div>
         </div>
       </div>
 
+
       {/* ===========================================
           Sección de Libros Disponibles
           =========================================== */}
-      <h2 style={titleStyle}>Libros Disponibles</h2>
+    <h2 style={{ ...titleStyle, color: '#194C57' }}>Libros Disponibles</h2>
       <div style={booksGridStyle}>
         {initialBooks.map((book) => (
           <BookCard key={book.id} book={book} addToCart={addToCart} />
         ))}
       </div>
 
-      {/* ===========================================
-          Sección del carrito y formulario de comentarios
-          Solo se muestra si hay items en el carrito
-          =========================================== */}
+
+    {/* ===========================================
+      Carousel horizontal con título "Ofertas!"
+    =========================================== */}
+  <div className="carousel-container" style={{ margin: '7rem 0 5rem 0' }}>
+        <h2 className="carousel-title" style={{ color: '#194C57' }}>Ofertas!</h2>
+        <div className="horizontal-carousel">
+          <div className="carousel-track" style={{ width: `${initialBooks.length * 6 * 160}px` }}>
+            {[...initialBooks, ...initialBooks, ...initialBooks, ...initialBooks, ...initialBooks, ...initialBooks].map((book, idx) => (
+              <div key={"oferta-"+idx} className="carousel-item">
+                <img src={book.image} alt={book.title} />
+                <h3 style={{ color: '#194C57', textAlign: 'center', fontSize: '1.1rem', marginTop: '0.5rem' }}>{book.title}</h3>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+    {/* ===========================================
+      Carousel horizontal con título "Más Vendidos!"
+    =========================================== */}
+  <div className="carousel-container" style={{ marginBottom: '5rem' }}>
+        <h2 className="carousel-title" style={{ color: '#194C57' }}>Más Vendidos!</h2>
+        <div className="horizontal-carousel">
+          <div className="carousel-track" style={{ width: `${initialBooks.length * 6 * 160}px` }}>
+            {[...initialBooks, ...initialBooks, ...initialBooks, ...initialBooks, ...initialBooks, ...initialBooks].map((book, idx) => (
+              <div key={"vendido-"+idx} className="carousel-item">
+                <img src={book.image} alt={book.title} />
+                <h3 style={{ color: '#194C57', textAlign: 'center', fontSize: '1.1rem', marginTop: '0.5rem' }}>{book.title}</h3>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+  {/* ...existing code... */}
       {cart.length > 0 && (
         <div style={cartSectionStyle}>
           <Cart cartItems={cart} removeFromCart={removeFromCart} />
@@ -105,15 +139,16 @@ function Home() {
 // Estilos en línea
 // ===========================================
 const containerStyle = { 
-  padding: '2rem', 
-  maxWidth: '1200px', 
-  margin: '0 auto', 
-  fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif", 
-  color: '#333', 
-  backgroundColor: '#f9f9f9', 
-  minHeight: '100vh' 
+  padding: '2rem',
+  maxWidth: '1200px',
+  margin: '0 auto',
+  fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+  color: 'inherit',
+  backgroundColor: 'inherit',
+  minHeight: '100vh',
 };
 
+// Si el body tiene la clase dark-mode, se usan las variables de modo oscuro por CSS
 const titleStyle = { 
   textAlign: 'center', 
   color: '#646cff', 

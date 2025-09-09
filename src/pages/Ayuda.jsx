@@ -80,9 +80,9 @@ const containerStyle = {
   justifyContent: "center",
   alignItems: "flex-start",
   padding: "2rem 1rem",
-  background: "#fff",
+  background: "var(--color-bg-light)",
   fontFamily: "Arial, sans-serif",
-  color: "grey",
+  color: "var(--color-text-light)",
 };
 
 const cardStyle = {

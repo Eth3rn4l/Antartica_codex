@@ -68,21 +68,21 @@ const containerStyle = {
   justifyContent: 'center',
   alignItems: 'center',
   height: '100vh',
-  background: '#fff', // mismo fondo que Home
+  background: 'var(--color-bg-light)',
   fontFamily: 'Arial, sans-serif',
-  color: 'grey',
+  color: 'var(--color-text-light)',
 };
 
 // Tarjeta con borde azul claro y fondo suave
 const cardStyle = {
-  background: '#B4E2ED', // mismo azul claro de comentarios
+  background: 'inherit',
   padding: '2rem',
   borderRadius: '12px',
   boxShadow: '0 8px 20px rgba(0,0,0,0.2)',
-  color: 'grey',
+  color: 'inherit',
   width: '100%',
   maxWidth: '400px',
-  border: '1px solid #646cff', // borde similar al de comentarios
+  border: '1px solid var(--color-primary)',
 };
 
 // Título centrado

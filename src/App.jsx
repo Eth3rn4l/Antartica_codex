@@ -4,8 +4,9 @@ import Header from './components/Header';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
-import Ayuda from './pages/Ayuda';   // 👈 Importamos la página de Ayuda
-import Contacto from './pages/Contacto'; // 👈 (si tienes Contacto.jsx creado)
+import Ayuda from './pages/Ayuda';
+import Contacto from './pages/Contacto';
+import SobreNosotros from './pages/SobreNosotros';
 
 function App() {
   const [userLoggedIn, setUserLoggedIn] = useState(false);
@@ -37,11 +38,12 @@ function App() {
         onLogout={handleLogout}
       />
 
-      {currentPage === 'home' && <Home />}
-      {currentPage === 'login' && <Login />}
-      {currentPage === 'register' && <Register />}
-      {currentPage === 'ayuda' && <Ayuda />}        {/* 👈 Render de Ayuda */}
-      {currentPage === 'contact' && <Contacto />}  {/* 👈 Render de Contacto */}
+  {currentPage === 'home' && <Home />}
+  {currentPage === 'login' && <Login />}
+  {currentPage === 'register' && <Register />}
+  {currentPage === 'ayuda' && <Ayuda />}
+  {currentPage === 'contact' && <Contacto />}
+  {currentPage === 'sobrenosotros' && <SobreNosotros />}
     </>
   );
 }

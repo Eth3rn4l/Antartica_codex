@@ -3,6 +3,7 @@
    =========================================== */
    .carousel-container {
     position: relative;     /* Permite posicionar elementos hijos de manera absoluta */
+    z-index: 0;
     width: 100%;            /* Ocupa todo el ancho disponible */
     margin-bottom: 2rem;    /* Separación inferior del resto de la página */
 }
@@ -19,18 +20,26 @@
     font-weight: bold;             /* Negrita */
     color: #646cff;                /* Color azul para destacar */
     text-shadow: 1px 1px 3px rgba(0,0,0,0.2); /* Sombra sutil para resaltar sobre el fondo */
-    z-index: 10;                   /* Se asegura que quede por encima de otros elementos */
+    z-index: 1;                   /* Permite que el menú quede por encima */
 }
 
 /* ===========================================
    Carousel horizontal
    =========================================== */
-.horizontal-carousel {
-    width: 100%;                  /* Ocupa todo el ancho del contenedor */
-    overflow: hidden;             /* Oculta los elementos que se salen del contenedor */
-    padding: 1rem 0;              /* Espaciado vertical interno */
-    background-color: #f0f0f0;    /* Fondo claro para diferenciar del resto */
-    border-radius: 12px;           /* Bordes redondeados */
+body.light-mode .horizontal-carousel {
+    width: 100%;
+    overflow: hidden;
+    padding: 1rem 0;
+    background-color: #f0f0f0;
+    border-radius: 12px;
+}
+
+body.dark-mode .horizontal-carousel {
+    width: 100%;
+    overflow: hidden;
+    padding: 1rem 0;
+    background-color: #222c36;
+    border-radius: 12px;
 }
 
 /* ===========================================
@@ -39,7 +48,7 @@
 .carousel-track {
     display: flex;                /* Alinea los elementos horizontalmente */
     gap: 1rem;                     /* Espacio entre cada item */
-    animation: scrollLeft 30s linear infinite; /* Animación de desplazamiento continuo */
+    animation: scrollLeft 240s linear infinite; /* Animación de desplazamiento continuo */
 }
 
 /* ===========================================

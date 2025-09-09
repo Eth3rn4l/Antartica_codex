@@ -113,13 +113,19 @@ function Register() {
         {["nombre", "apellido", "email", "password", "confirmPassword", "telefono", "region", "comuna", "rut"].map((field) => (
           <div key={field} style={inputContainerStyle}>
             <input
-              type={field.includes("password") ? "password" : "text"} // Si es password, oculta los caracteres
+              type={field === 'password' || field === 'confirmPassword' ? 'password' : 'text'}
               name={field}
-              placeholder={field.charAt(0).toUpperCase() + field.slice(1)} // Primera letra mayúscula en placeholder
-              value={formData[field]} // Valor del input
-              onChange={handleChange} // Maneja cambios
+              placeholder={
+                field === 'password'
+                  ? 'Contraseña'
+                  : field === 'confirmPassword'
+                  ? 'Confirmar Contraseña'
+                  : field.charAt(0).toUpperCase() + field.slice(1)
+              }
+              value={formData[field]}
+              onChange={handleChange}
               style={inputStyle}
-              required // Campo obligatorio
+              required
             />
             {/* Muestra mensaje de error si existe */}
             {errors[field] && <span style={errorStyle}>{errors[field]}</span>}
@@ -138,9 +144,9 @@ const containerStyle = {
   alignItems: 'center',
   justifyContent: 'center',
   minHeight: '100vh',
-  backgroundColor: 'white', // Fondo de la página ahora blanco
+  backgroundColor: 'var(--color-bg-light)',
   fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
-  color: 'grey',
+  color: 'var(--color-text-dark)',
 };
 
 // Estilos del título
@@ -155,7 +161,7 @@ const formStyle = {
   display: 'flex',
   flexDirection: 'column',
   gap: '1rem',
-  background: '#B4E2ED', // Ahora el cuadro del formulario tiene el color que estaba en el fondo
+  background: 'var(--color-bg-light)',
   padding: '2rem',
   borderRadius: '12px',
   boxShadow: '0 8px 20px rgba(99, 15, 15, 0.15)',
@@ -173,9 +179,9 @@ const inputContainerStyle = {
 const inputStyle = {
   padding: '0.75rem 1rem',
   borderRadius: '8px',
-  border: '1px solid #646cff',
-  background: 'white',
-  color: 'grey',
+  border: '1px solid var(--color-primary)',
+  background: 'var(--color-bg-light)',
+  color: 'var(--color-text-dark)',
   outline: 'none',
 };
 
@@ -191,8 +197,8 @@ const buttonStyle = {
   padding: '0.75rem 1rem',
   borderRadius: '8px',
   border: 'none',
-  background: '#646cff',
-  color: 'white',
+  background: 'var(--color-primary)',
+  color: 'var(--color-text-light)',
   fontWeight: 'bold',
   cursor: 'pointer',
 };

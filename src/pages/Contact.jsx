@@ -20,9 +20,9 @@ function Contact() {
 
           <h2 style={infoTitle}>Redes Sociales</h2>
           <p style={infoText}>
-            Instagram: @libreriaonline <br />
-            Facebook: /libreriaonline <br />
-            Twitter: @libreriaonline
+            <a href="https://www.instagram.com/antarticalibros/" target="_blank" rel="noopener noreferrer">Instagram: @antarticalibros</a><br />
+            <a href="https://es-la.facebook.com/LibreriaAntartica/" target="_blank" rel="noopener noreferrer">Facebook: /libreriaonline</a><br />
+            <a href="https://x.com/antartica_cl" target="_blank" rel="noopener noreferrer">Twitter: @antartica_cl</a>
           </p>
         </div>
 
@@ -50,14 +50,14 @@ const containerStyle = {
   alignItems: "flex-start",
   minHeight: "100vh",
   padding: "2rem 1rem",
-  background: "#fff",
+  background: "#f4f4f5",
   fontFamily: "Arial, sans-serif",
-  color: "grey",
+  color: "#213547",
 };
 
 const cardStyle = {
   background: "#B4E2ED",
-  padding: "2rem",
+  background: "#fff",
   borderRadius: "12px",
   boxShadow: "0 8px 20px rgba(0,0,0,0.2)",
   color: "grey",
