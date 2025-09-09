@@ -102,7 +102,7 @@ const titleStyle = {
   fontWeight: "600",
   fontSize: "2rem",
   letterSpacing: "0.5px",
-  color: "#023e8a",
+  color: "#194C57",
 };
 
 const descStyle = {
@@ -124,7 +124,7 @@ const faqItem = {
 };
 
 const faqQuestion = {
-  background: "#646cff",
+  background: "#194C57",
   color: "white",
   padding: "1rem",
   fontWeight: "bold",
@@ -185,7 +185,7 @@ const buttonStyle = {
   padding: "0.8rem 1rem",
   borderRadius: "8px",
   border: "none",
-  background: "#646cff",
+  background: "#194C57",
   color: "white",
   fontSize: "1rem",
   fontWeight: "600",

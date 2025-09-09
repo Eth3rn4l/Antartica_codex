@@ -1,6 +1,10 @@
+// src/pages/Register.jsx
 import React, { useState } from 'react';
 
-// Componente Register: formulario de registro de usuario
+/**
+ * Componente Register
+ * Formulario de registro de usuario con validación de email, contraseña, teléfono y RUT chileno.
+ */
 function Register() {
   // Estado para almacenar los valores del formulario
   const [formData, setFormData] = useState({
@@ -12,40 +16,45 @@ function Register() {
     telefono: '',
     region: '',
     comuna: '',
-    rut: '', // Añadido el campo RUT
+    rut: '',
   });
 
   // Estado para almacenar los errores de validación por campo
   const [errors, setErrors] = useState({});
 
-  // Función que se ejecuta al cambiar un input
-  // Actualiza el valor correspondiente en formData
+  /**
+   * handleChange
+   * Actualiza el estado formData cuando el usuario escribe en un input
+   */
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Función de validación del formulario
+  /**
+   * validate
+   * Valida los campos del formulario y actualiza el estado errors
+   */
   const validate = () => {
     const newErrors = {};
 
-    // Expresión regular para validar el email
+    // Validar email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.email)) {
       newErrors.email = 'Correo inválido';
     }
 
-    // Verifica que la contraseña y la confirmación coincidan
+    // Validar contraseña y confirmación
     if (formData.password !== formData.confirmPassword) {
       newErrors.password = 'Las contraseñas no coinciden';
     }
 
-    // Expresión regular para validar teléfono chileno +569xxxxxxxx
+    // Validar teléfono chileno
     const phoneRegex = /^\+569\d{8}$/;
     if (!phoneRegex.test(formData.telefono)) {
       newErrors.telefono = 'Teléfono inválido. Debe iniciar con +569 y tener 9 dígitos';
     }
 
-    // Validación del RUT chileno
+    // Validar RUT chileno
     const validateRut = (rut) => {
       const cleanRut = rut.replace(/[^\dkK]/g, '').toUpperCase();
       if (cleanRut.length < 8 || cleanRut.length > 9) return false;
@@ -55,7 +64,6 @@ function Register() {
 
       let sum = 0;
       let multiplier = 2;
-
       for (let i = body.length - 1; i >= 0; i--) {
         sum += parseInt(body[i]) * multiplier;
         multiplier = multiplier === 7 ? 2 : multiplier + 1;
@@ -71,22 +79,19 @@ function Register() {
       newErrors.rut = 'RUT inválido';
     }
 
-    // Actualiza el estado de errores
     setErrors(newErrors);
-
-    // Devuelve true si no hay errores
     return Object.keys(newErrors).length === 0;
   };
 
-  // Función que se ejecuta al enviar el formulario
+  /**
+   * handleSubmit
+   * Se ejecuta al enviar el formulario, valida y muestra alerta si es correcto
+   */
   const handleSubmit = (e) => {
-    e.preventDefault(); // Evita que la página se recargue
+    e.preventDefault();
 
     if (validate()) {
-      // Si la validación es correcta, imprime los datos en consola
       console.log('Usuario registrado:', formData);
-
-      // Muestra una alerta de éxito
       alert('Registro exitoso');
 
       // Reinicia el formulario
@@ -99,74 +104,84 @@ function Register() {
         telefono: '',
         region: '',
         comuna: '',
-        rut: '', // Añadido el campo RUT
+        rut: '',
       });
     }
   };
 
-  // Renderizado del formulario
   return (
     <div style={containerStyle}>
-      <h2 style={titleStyle}>Registro de Usuario</h2>
-      <form onSubmit={handleSubmit} style={formStyle}>
-        {/* Recorre los campos del formulario para generar inputs */}
-        {["nombre", "apellido", "email", "password", "confirmPassword", "telefono", "region", "comuna", "rut"].map((field) => (
-          <div key={field} style={inputContainerStyle}>
-            <input
-              type={field === 'password' || field === 'confirmPassword' ? 'password' : 'text'}
-              name={field}
-              placeholder={
-                field === 'password'
-                  ? 'Contraseña'
-                  : field === 'confirmPassword'
-                  ? 'Confirmar Contraseña'
-                  : field.charAt(0).toUpperCase() + field.slice(1)
-              }
-              value={formData[field]}
-              onChange={handleChange}
-              style={inputStyle}
-              required
-            />
-            {/* Muestra mensaje de error si existe */}
-            {errors[field] && <span style={errorStyle}>{errors[field]}</span>}
-          </div>
-        ))}
-        <button type="submit" style={buttonStyle}>Registrar</button>
-      </form>
+      <div style={cardStyle}>
+        <h2 style={titleStyle}>Registro de Usuario</h2>
+        <form onSubmit={handleSubmit} style={formStyle}>
+          {["nombre", "apellido", "email", "password", "confirmPassword", "telefono", "region", "comuna", "rut"].map((field) => (
+            <div key={field} style={inputContainerStyle}>
+              <input
+                type={field === 'password' || field === 'confirmPassword' ? 'password' : 'text'}
+                name={field}
+                placeholder={
+                  field === 'password'
+                    ? 'Contraseña'
+                    : field === 'confirmPassword'
+                    ? 'Confirmar Contraseña'
+                    : field.charAt(0).toUpperCase() + field.slice(1)
+                }
+                value={formData[field]}
+                onChange={handleChange}
+                style={inputStyle}
+                required
+              />
+              {errors[field] && <span style={errorStyle}>{errors[field]}</span>}
+            </div>
+          ))}
+          <button type="submit" style={buttonStyle}>Registrar</button>
+        </form>
+      </div>
     </div>
   );
 }
 
-// Estilos del contenedor principal
+/* =========================
+   Estilos adaptados de Ayuda.jsx
+   ========================= */
+
+// Contenedor centrado
 const containerStyle = {
   display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
   justifyContent: 'center',
+  alignItems: 'center',
   minHeight: '100vh',
-  backgroundColor: 'var(--color-bg-light)',
-  fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
-  color: 'var(--color-text-dark)',
+  background: 'var(--color-bg-light)',
+  fontFamily: 'Arial, sans-serif',
+  color: 'var(--color-text-light)',
 };
 
-// Estilos del título
+// Tarjeta de formulario con borde y sombra
+const cardStyle = {
+  background: '#B4E2ED',
+  padding: '2rem',
+  borderRadius: '12px',
+  boxShadow: '0 8px 20px rgba(0,0,0,0.2)',
+  width: '100%',
+  maxWidth: '450px',
+  border: '1px solid #646cff',
+  color: 'grey',
+};
+
+// Título centrado
 const titleStyle = {
+  textAlign: 'center',
   marginBottom: '1.5rem',
-  fontSize: '2rem',
-  letterSpacing: '1px',
+  fontWeight: '600',
+  fontSize: '1.8rem',
+  color: '#194C57',
 };
 
-// Estilos del formulario
+// Formulario vertical con espacio
 const formStyle = {
   display: 'flex',
   flexDirection: 'column',
   gap: '1rem',
-  background: 'var(--color-bg-light)',
-  padding: '2rem',
-  borderRadius: '12px',
-  boxShadow: '0 8px 20px rgba(99, 15, 15, 0.15)',
-  width: '100%',
-  maxWidth: '400px',
 };
 
 // Contenedor de cada input
@@ -175,32 +190,34 @@ const inputContainerStyle = {
   flexDirection: 'column',
 };
 
-// Estilos de los inputs
+// Inputs con borde morado y fondo blanco
 const inputStyle = {
-  padding: '0.75rem 1rem',
+  padding: '0.8rem 1rem',
   borderRadius: '8px',
-  border: '1px solid var(--color-primary)',
-  background: 'var(--color-bg-light)',
-  color: 'var(--color-text-dark)',
+  border: '1px solid #646cff',
+  background: '#fff',
+  color: 'grey',
   outline: 'none',
 };
 
-// Estilos de los mensajes de error
+// Mensajes de error en rojo
 const errorStyle = {
-  color: '#e74c3c',
-  fontSize: '0.8rem',
+  color: '#f87171',
+  fontSize: '0.85rem',
   marginTop: '0.25rem',
 };
 
-// Estilos del botón de registro
+// Botón azul principal
 const buttonStyle = {
-  padding: '0.75rem 1rem',
+  padding: '0.8rem 1rem',
   borderRadius: '8px',
   border: 'none',
-  background: 'var(--color-primary)',
-  color: 'var(--color-text-light)',
-  fontWeight: 'bold',
+  background: '#194C57',
+  color: 'white',
+  fontSize: '1rem',
+  fontWeight: '600',
   cursor: 'pointer',
+  transition: 'background 0.3s, transform 0.2s',
 };
 
-export default Register; // Exporta el componente
+export default Register;

@@ -20,9 +20,15 @@ function Contact() {
 
           <h2 style={infoTitle}>Redes Sociales</h2>
           <p style={infoText}>
-            <a href="https://www.instagram.com/antarticalibros/" target="_blank" rel="noopener noreferrer">Instagram: @antarticalibros</a><br />
-            <a href="https://es-la.facebook.com/LibreriaAntartica/" target="_blank" rel="noopener noreferrer">Facebook: /libreriaonline</a><br />
-            <a href="https://x.com/antartica_cl" target="_blank" rel="noopener noreferrer">Twitter: @antartica_cl</a>
+            <a style={linkStyle} href="https://www.instagram.com/antarticalibros/" target="_blank" rel="noopener noreferrer">
+              Instagram: @antarticalibros
+            </a><br />
+            <a style={linkStyle} href="https://es-la.facebook.com/LibreriaAntartica/" target="_blank" rel="noopener noreferrer">
+              Facebook: /libreriaonline
+            </a><br />
+            <a style={linkStyle} href="https://x.com/antartica_cl" target="_blank" rel="noopener noreferrer">
+              Twitter: @antartica_cl
+            </a>
           </p>
         </div>
 
@@ -42,22 +48,22 @@ function Contact() {
 }
 
 /* =========================
-   Estilos inline
+   Estilos adaptados de Ayuda.jsx
    ========================= */
+
 const containerStyle = {
   display: "flex",
   justifyContent: "center",
   alignItems: "flex-start",
-  minHeight: "100vh",
   padding: "2rem 1rem",
-  background: "#f4f4f5",
+  background: "var(--color-bg-light)",
   fontFamily: "Arial, sans-serif",
-  color: "#213547",
+  color: "var(--color-text-light)",
 };
 
 const cardStyle = {
   background: "#B4E2ED",
-  background: "#fff",
+  padding: "2rem",
   borderRadius: "12px",
   boxShadow: "0 8px 20px rgba(0,0,0,0.2)",
   color: "grey",
@@ -72,7 +78,7 @@ const titleStyle = {
   fontWeight: "600",
   fontSize: "2rem",
   letterSpacing: "0.5px",
-  color: "#023e8a",
+  color: "#194C57",
 };
 
 const descStyle = {
@@ -84,20 +90,28 @@ const descStyle = {
 
 const infoBox = {
   marginBottom: "2rem",
-  background: "#e0f7fa",
-  padding: "1rem",
   borderRadius: "8px",
   border: "1px solid #646cff",
+  background: "#f9f9f9",
+  padding: "1rem",
 };
 
 const infoTitle = {
   fontWeight: "600",
   marginBottom: "0.3rem",
+  color: "#194C57",
 };
 
 const infoText = {
   marginBottom: "1rem",
   color: "#333",
+  lineHeight: "1.5",
+};
+
+const linkStyle = {
+  color: "#194C57",
+  textDecoration: "none",
+  fontWeight: "500",
 };
 
 const contactBox = {
@@ -141,7 +155,7 @@ const buttonStyle = {
   padding: "0.8rem 1rem",
   borderRadius: "8px",
   border: "none",
-  background: "#646cff",
+  background: "#194C57",
   color: "white",
   fontSize: "1rem",
   fontWeight: "600",

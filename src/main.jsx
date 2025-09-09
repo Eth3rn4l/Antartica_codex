@@ -10,6 +10,7 @@ import Register from './pages/Register';
 import Ayuda from './pages/Ayuda';
 import Contact from './pages/Contact';
 import Footer from './Footer'; // Importa el Footer
+import SobreNosotros from './pages/SobreNosotros'; // Importa el componente SobreNosotros
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -22,6 +23,7 @@ createRoot(document.getElementById('root')).render(
         <Route path="/register" element={<Register />} />
         <Route path="/ayuda" element={<Ayuda />} /> {/* <--- Ruta */}
         <Route path="/contact" element={<Contact />} /> {/* <--- Ruta */}
+        <Route path="/sobrenosotros" element={<SobreNosotros />} /> {/* Agrega esta línea */}
       </Routes>
       <Footer /> {/* Agrega el Footer aquí */}
     </BrowserRouter>
