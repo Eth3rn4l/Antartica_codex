@@ -7,6 +7,8 @@ import Register from './pages/Register';
 import Ayuda from './pages/Ayuda';
 import Contacto from './pages/Contacto';
 import SobreNosotros from './pages/SobreNosotros';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import AdminView from './pages/AdminView';
 
 function App() {
   const [userLoggedIn, setUserLoggedIn] = useState(false);
@@ -31,20 +33,23 @@ function App() {
   }, [currentPage]);
 
   return (
-    <>
+    <Router>
       <Header
         userLoggedIn={userLoggedIn}
         onNavigate={navigate}
         onLogout={handleLogout}
       />
 
-  {currentPage === 'home' && <Home />}
-  {currentPage === 'login' && <Login />}
-  {currentPage === 'register' && <Register />}
-  {currentPage === 'ayuda' && <Ayuda />}
-  {currentPage === 'contact' && <Contacto />}
-  {currentPage === 'sobrenosotros' && <SobreNosotros />}
-    </>
+      <Routes>
+        <Route path="/" element={currentPage === 'home' && <Home />} />
+        <Route path="/login" element={currentPage === 'login' && <Login />} />
+        <Route path="/register" element={currentPage === 'register' && <Register />} />
+        <Route path="/ayuda" element={currentPage === 'ayuda' && <Ayuda />} />
+        <Route path="/contact" element={currentPage === 'contact' && <Contacto />} />
+        <Route path="/sobrenosotros" element={currentPage === 'sobrenosotros' && <SobreNosotros />} />
+        <Route path="/adminview" element={<AdminView />} />
+      </Routes>
+    </Router>
   );
 }
 

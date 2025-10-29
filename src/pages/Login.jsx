@@ -7,14 +7,13 @@ import React, { useState } from 'react';
  * Valida formato de correo y que la contraseña no esté vacía.
  */
 function Login() {
-  // Estado para almacenar los valores del formulario
   const [formData, setFormData] = useState({
     email: '',
     password: '',
   });
-
-  // Estado para mostrar mensajes de error
   const [error, setError] = useState('');
+  // Agregar estado para redirección
+  const [redirect, setRedirect] = useState('');
 
   /**
    * handleChange
@@ -44,7 +43,16 @@ function Login() {
       return;
     }
 
-    // Limpiar errores y mostrar datos (simulación de login)
+    // Verificar si es el admin
+    if (formData.email === 'admin@admin.com' && formData.password === 'admin123') {
+      setError('');
+      console.log('Administrador logueado');
+      // Redirigir a la vista de administrador
+      window.location.href = '/adminview';
+      return;
+    }
+
+    // Login para usuarios normales
     setError('');
     console.log('Usuario logueado:', formData);
     alert('Login exitoso');
@@ -137,13 +145,12 @@ const inputStyle = {
   padding: '0.8rem 1rem',
   borderRadius: '8px',
   border: '1px solid #646cff',
-  outline: 'none',
+  background: 'white',
+  color: '#333',
   fontSize: '1rem',
-  background: '#fff',
-  color: 'grey',
 };
 
-// Mensaje de error centrado y en rojo
+// Mensaje de error en rojo
 const errorStyle = {
   color: '#f87171', // rojo para error
   fontSize: '0.85rem',
