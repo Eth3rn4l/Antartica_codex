@@ -67,6 +67,8 @@ function Home() {
       setBooks((prev) => prev.map((b) => b.id === book.id ? { ...b, stock: b.stock - 1 } : b));
       // opcional: actualizar cart local para mostrar el panel
       setCart((c) => [...c, book]);
+      // notificar a header y otros listeners que el carrito cambió
+      try { window.dispatchEvent(new Event('cartChanged')); } catch(e){}
     }).catch((err) => alert(err.message));
   };
   // Función para eliminar un libro del carrito por índice (y devolver stock)

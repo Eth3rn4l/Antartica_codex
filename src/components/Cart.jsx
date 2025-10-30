@@ -36,10 +36,12 @@ function Cart({ cartItems: propCart, removeFromCart: propRemove }) {
           const err = await r.json().catch(() => ({}));
           throw new Error(err.error || 'Error eliminando del carrito');
         }
-        // refetch cart from server to ensure consistency and stock updates
-        const res = await fetch(`${API_BASE}/api/cart`, { headers: { Authorization: `Bearer ${token}` } });
-        const fresh = await res.json().catch(() => []);
-        setCartItems(fresh);
+  // refetch cart from server to ensure consistency and stock updates
+  const res = await fetch(`${API_BASE}/api/cart`, { headers: { Authorization: `Bearer ${token}` } });
+  const fresh = await res.json().catch(() => []);
+  setCartItems(fresh);
+  // notify other parts of the app (header) in same tab
+  try { window.dispatchEvent(new Event('cartChanged')); } catch(e) {}
         if (propRemove) propRemove(index);
       })
       .catch((e) => alert(e.message));

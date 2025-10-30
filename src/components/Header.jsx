@@ -17,18 +17,30 @@ function Header() {
   useEffect(() => {
     const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:4000';
     const token = localStorage.getItem('token');
-    if (token) {
-      fetch(`${API_BASE}/api/cart`, { headers: { Authorization: `Bearer ${token}` } })
-        .then(async (r) => {
-          if (!r.ok) throw new Error('No auth');
-          const data = await r.json();
-          setCartItems(data.length);
-        })
-        .catch(() => setCartItems(0));
-    } else {
-      const c = JSON.parse(localStorage.getItem('cart') || '[]');
-      setCartItems(c.length);
-    }
+    const updateCartCount = async () => {
+      const t = localStorage.getItem('token');
+      if (t) {
+        try {
+          const res = await fetch(`${API_BASE}/api/cart`, { headers: { Authorization: `Bearer ${t}` } });
+          if (!res.ok) throw new Error('No auth');
+          const data = await res.json();
+          // sumar cantidades (cada item tiene quantity)
+          const sum = data.reduce((s, it) => s + (it.quantity || 1), 0);
+          setCartItems(sum);
+        } catch (e) {
+          setCartItems(0);
+        }
+      } else {
+        const c = JSON.parse(localStorage.getItem('cart') || '[]');
+        // c puede ser array de objetos con quantity o simple lista
+        const sum = Array.isArray(c) ? c.reduce((s, it) => s + (it.quantity || 1), 0) : 0;
+        setCartItems(sum);
+      }
+    };
+    // inicializar
+    updateCartCount();
+    // exponer la funcion para reuso en handlers
+    const cartHandler = () => updateCartCount();
     const u = localStorage.getItem('currentUser');
     if (u) setCurrentUser(JSON.parse(u));
   }, []);
@@ -53,7 +65,12 @@ function Header() {
       setCurrentUser(u ? JSON.parse(u) : null);
     };
     window.addEventListener('storage', handler);
-    return () => window.removeEventListener('storage', handler);
+    // custom event to update cart count within same tab
+    window.addEventListener('cartChanged', cartHandler);
+    return () => {
+      window.removeEventListener('storage', handler);
+      window.removeEventListener('cartChanged', cartHandler);
+    };
   }, []);
   const logoUrl = '/assets/logo.png';
   return (
