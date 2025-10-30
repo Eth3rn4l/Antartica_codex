@@ -35,9 +35,14 @@ function Home() {
 
   // Cargar libros desde la API al montar
   useEffect(() => {
-    fetch('/api/books')
+    const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:4000';
+    fetch(`${API_BASE}/api/books`)
       .then((r) => r.json())
-      .then((data) => setBooks(data))
+      .then((data) => {
+        // aceptar formato paginado { items, total } o array legacy
+        if (Array.isArray(data)) setBooks(data);
+        else setBooks(data.items || []);
+      })
       .catch(() => setBooks(initialBooks));
   }, []);
 
@@ -48,7 +53,8 @@ function Home() {
       window.location.href = '/login';
       return;
     }
-    fetch('/api/cart', {
+    const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:4000';
+    fetch(`${API_BASE}/api/cart`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
       body: JSON.stringify({ book_id: book.id, quantity: 1 })

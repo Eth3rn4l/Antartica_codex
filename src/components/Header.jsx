@@ -15,9 +15,10 @@ function Header() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:4000';
     const token = localStorage.getItem('token');
     if (token) {
-      fetch('/api/cart', { headers: { Authorization: `Bearer ${token}` } })
+      fetch(`${API_BASE}/api/cart`, { headers: { Authorization: `Bearer ${token}` } })
         .then(async (r) => {
           if (!r.ok) throw new Error('No auth');
           const data = await r.json();

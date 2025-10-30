@@ -1,6 +1,8 @@
 // Importación de React y hooks necesarios
 import React, { useState, useEffect } from 'react';
 
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:4000';
+
 // Componente funcional Cart que recibe props: cartItems y removeFromCart
 function Cart({ cartItems: propCart, removeFromCart: propRemove }) {
   // Estado local 'cartItems' que mantiene los productos en el carrito
@@ -10,7 +12,7 @@ function Cart({ cartItems: propCart, removeFromCart: propRemove }) {
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) return; // no autenticado
-    fetch('/api/cart', { headers: { Authorization: `Bearer ${token}` } })
+    fetch(`${API_BASE}/api/cart`, { headers: { Authorization: `Bearer ${token}` } })
       .then(async (r) => {
         if (!r.ok) throw new Error('No se pudo cargar el carrito');
         const data = await r.json();
@@ -28,14 +30,16 @@ function Cart({ cartItems: propCart, removeFromCart: propRemove }) {
       window.location.href = '/login';
       return;
     }
-    fetch(`/api/cart/${item.id}`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } })
+    fetch(`${API_BASE}/api/cart/${item.id}`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } })
       .then(async (r) => {
         if (!r.ok) {
           const err = await r.json().catch(() => ({}));
           throw new Error(err.error || 'Error eliminando del carrito');
         }
-        const updated = cartItems.filter((_, i) => i !== index);
-        setCartItems(updated);
+        // refetch cart from server to ensure consistency and stock updates
+        const res = await fetch(`${API_BASE}/api/cart`, { headers: { Authorization: `Bearer ${token}` } });
+        const fresh = await res.json().catch(() => []);
+        setCartItems(fresh);
         if (propRemove) propRemove(index);
       })
       .catch((e) => alert(e.message));
