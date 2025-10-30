@@ -194,6 +194,19 @@ app.delete('/api/users/:id', authMiddleware, requireAdmin, async (req, res) => {
   }
 });
 
+// Obtener datos del usuario autenticado
+app.get('/api/users/me', authMiddleware, async (req, res) => {
+  try {
+    const pool = await getPool();
+    const [rows] = await pool.query('SELECT id, nombre, apellido, email, telefono, region, comuna, rut, role, created_at FROM users WHERE id = ?', [req.user.id]);
+    if (!rows || rows.length === 0) return res.status(404).json({ error: 'User not found' });
+    return res.json({ user: rows[0] });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: 'Server error' });
+  }
+});
+
 // Cart endpoints
 app.get('/api/cart', authMiddleware, async (req, res) => {
   try {

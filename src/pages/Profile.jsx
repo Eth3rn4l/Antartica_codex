@@ -13,9 +13,40 @@ function Profile() {
   }
 
   const current = JSON.parse(raw);
-  // Buscar datos completos en users (si existen)
-  const users = JSON.parse(localStorage.getItem('users') || '[]');
-  const full = users.find((u) => u.email === current.email) || current;
+  const [full, setFull] = React.useState(null);
+
+  React.useEffect(() => {
+    const load = async () => {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        // fallback a localStorage users
+        const users = JSON.parse(localStorage.getItem('users') || '[]');
+        const f = users.find((u) => u.email === current.email) || current;
+        setFull(f);
+        return;
+      }
+      try {
+        const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:4000';
+        const res = await fetch(`${API_BASE}/api/users/me`, { headers: { Authorization: `Bearer ${token}` } });
+        if (!res.ok) {
+          const fallbackUsers = JSON.parse(localStorage.getItem('users') || '[]');
+          setFull(fallbackUsers.find((u) => u.email === current.email) || current);
+          return;
+        }
+        const data = await res.json();
+        setFull(data.user || current);
+      } catch (e) {
+        console.error(e);
+        const users = JSON.parse(localStorage.getItem('users') || '[]');
+        setFull(users.find((u) => u.email === current.email) || current);
+      }
+    };
+    load();
+  }, []);
+
+  if (!full) {
+    return (<div style={{ padding: '2rem' }}>Cargando datos...</div>);
+  }
 
   return (
     <div style={{ padding: '2rem', maxWidth: '800px', margin: '0 auto' }}>
