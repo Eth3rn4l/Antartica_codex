@@ -88,8 +88,8 @@ export default function AdminBooks() {
         <input name="author" placeholder="Autor" value={form.author} onChange={handleChange} required />
         <input name="price" placeholder="Precio" value={form.price} onChange={handleChange} />
         <input name="stock" placeholder="Stock" value={form.stock} onChange={handleChange} />
-        <input name="image" placeholder="URL imagen" value={form.image} onChange={handleChange} />
-        <button type="submit">Agregar Libro</button>
+  <input name="image" placeholder="URL imagen" value={form.image} onChange={handleChange} />
+  <button type="submit" style={{ backgroundColor: 'var(--btn-primary)', color: 'white', border: 'none', borderRadius: 6, padding: '0.4rem 0.7rem', cursor: 'pointer' }}>Agregar Libro</button>
       </form>
 
       <div>
