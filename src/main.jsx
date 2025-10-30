@@ -15,6 +15,7 @@ import SobreNosotros from './pages/SobreNosotros'; // Importa el componente Sobr
 import AdminView from './pages/AdminView';
 import AdminBooks from './pages/AdminBooks';
 import AdminUsers from './pages/AdminUsers';
+import ClienteView from './pages/ClienteView';
 import ProtectedRoute from './components/ProtectedRoute';
 import Profile from './pages/Profile';
 
@@ -82,6 +83,7 @@ createRoot(document.getElementById('root')).render(
   <Route path="/adminview" element={<ProtectedRoute allowedRoles={[ 'admin' ]}><ErrorBoundary><AdminView /></ErrorBoundary></ProtectedRoute>} />
   <Route path="/admin/books" element={<ProtectedRoute allowedRoles={[ 'admin' ]}><ErrorBoundary><AdminBooks /></ErrorBoundary></ProtectedRoute>} />
   <Route path="/admin/users" element={<ProtectedRoute allowedRoles={[ 'admin' ]}><ErrorBoundary><AdminUsers /></ErrorBoundary></ProtectedRoute>} />
+  <Route path="/admin/clients" element={<ProtectedRoute allowedRoles={[ 'admin' ]}><ErrorBoundary><ClienteView /></ErrorBoundary></ProtectedRoute>} />
         <Route path="/profile" element={<ProtectedRoute allowedRoles={[ 'client', 'admin' ]}><Profile /></ProtectedRoute>} />
       </Routes>
       <Footer /> {/* Agrega el Footer aquí */}

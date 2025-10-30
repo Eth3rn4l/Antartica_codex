@@ -141,16 +141,34 @@ app.delete('/api/books/:id', authMiddleware, requireAdmin, async (req, res) => {
 app.get('/api/users', authMiddleware, requireAdmin, async (req, res) => {
   try {
     const pool = await getPool();
-    // paginación opcional
+    // paginación opcional y filtrado por role (ej: ?role=client)
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 1000;
     const offset = (page - 1) * limit;
-    const [[{ total }]] = await pool.query('SELECT COUNT(*) as total FROM users');
-  // ordenar para que los admins aparezcan primero (id descendente dentro de cada grupo)
-  // usar CASE WHEN para máxima compatibilidad
-  // usar FIELD para forzar admins al principio (mayor compatibilidad con versiones/colaciones)
-  const [rows] = await pool.query("SELECT id, nombre, apellido, email, telefono, region, comuna, rut, role, created_at FROM users ORDER BY FIELD(role, 'admin') DESC, id DESC LIMIT ? OFFSET ?", [limit, offset]);
-  return res.json({ items: rows, total, page, limit });
+    const roleFilter = req.query.role;
+
+    // total con posible filtro
+    let totalSql = 'SELECT COUNT(*) as total FROM users';
+    const totalParams = [];
+    if (roleFilter) {
+      totalSql += ' WHERE role = ?';
+      totalParams.push(roleFilter);
+    }
+    const [[{ total }]] = await pool.query(totalSql, totalParams);
+
+    // rows con posible filtro; ordenar admins al principio por compatibilidad
+    let rowsSql = "SELECT id, nombre, apellido, email, telefono, region, comuna, rut, role, created_at FROM users";
+    const rowsParams = [];
+    if (roleFilter) {
+      rowsSql += ' WHERE role = ?';
+      rowsParams.push(roleFilter);
+    }
+  rowsSql += " ORDER BY FIELD(role, 'admin') DESC, id DESC LIMIT ? OFFSET ?";
+  rowsParams.push(limit, offset);
+  // debug: log SQL and params when roleFilter used
+  if (roleFilter) console.log('SQL users list:', rowsSql, 'params:', rowsParams);
+  const [rows] = await pool.query(rowsSql, rowsParams);
+    return res.json({ items: rows, total, page, limit });
   } catch (err) {
     console.error(err);
     return res.status(500).json({ error: 'Server error' });
