@@ -1,6 +1,6 @@
 // Importación de dependencias
-import React, { useState } from "react";       // React y hook useState para manejar estado local
-import { Link } from "react-router-dom";       // Componente Link para navegación sin recargar la página
+import React, { useState, useEffect } from "react";       // React y hooks
+import { Link, useNavigate } from "react-router-dom";       // Componente Link para navegación sin recargar la página
 import SidebarCategorias from "./SidebarCategorias";
 import "./SearchInline.css";
 import "./Header.css";                         // Importación del CSS que contiene estilos para el header, input y buscador
@@ -11,6 +11,49 @@ function Header() {
   const closeTimeout = React.useRef();
   const [cartItems, setCartItems] = useState(0);
   const [darkMode, setDarkMode] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      fetch('/api/cart', { headers: { Authorization: `Bearer ${token}` } })
+        .then(async (r) => {
+          if (!r.ok) throw new Error('No auth');
+          const data = await r.json();
+          setCartItems(data.length);
+        })
+        .catch(() => setCartItems(0));
+    } else {
+      const c = JSON.parse(localStorage.getItem('cart') || '[]');
+      setCartItems(c.length);
+    }
+    const u = localStorage.getItem('currentUser');
+    if (u) setCurrentUser(JSON.parse(u));
+  }, []);
+
+  // Escuchar cambios simples de almacenamiento (otras pestañas)
+  useEffect(() => {
+    const handler = () => {
+      const token = localStorage.getItem('token');
+      if (token) {
+        fetch('/api/cart', { headers: { Authorization: `Bearer ${token}` } })
+          .then(async (r) => {
+            if (!r.ok) throw new Error('No auth');
+            const data = await r.json();
+            setCartItems(data.length);
+          })
+          .catch(() => setCartItems(0));
+      } else {
+        const c = JSON.parse(localStorage.getItem('cart') || '[]');
+        setCartItems(c.length);
+      }
+      const u = localStorage.getItem('currentUser');
+      setCurrentUser(u ? JSON.parse(u) : null);
+    };
+    window.addEventListener('storage', handler);
+    return () => window.removeEventListener('storage', handler);
+  }, []);
   const logoUrl = '/assets/logo.png';
   return (
       <header style={headerStyle}>
@@ -75,8 +118,34 @@ function Header() {
                     closeTimeout.current = setTimeout(() => setMenuOpen(false), 250);
                   }}
                 >
-                  <Link style={{ ...linkStyle, color: '#213547', padding: '0.5rem 1rem', textAlign: 'left' }} to="/login">Login</Link>
-                  <Link style={{ ...linkStyle, color: '#213547', padding: '0.5rem 1rem', textAlign: 'left' }} to="/register">Registro</Link>
+                  {currentUser ? (
+                    <>
+                      <Link style={{ ...linkStyle, color: '#213547', padding: '0.5rem 1rem', textAlign: 'left' }} to="/profile">
+                        {/* Mostrar saludo con nombre si existe; para client mostrar nombre (Hola Nombre) */}
+                        {currentUser.role === 'client'
+                          ? `Hola ${currentUser.nombre || currentUser.email}`
+                          : `Hola ${currentUser.nombre || currentUser.email}`}
+                      </Link>
+                      {currentUser.role === 'admin' && (
+                        <Link style={{ ...linkStyle, color: '#213547', padding: '0.5rem 1rem', textAlign: 'left' }} to="/adminview">Admin</Link>
+                      )}
+                      <div
+                        style={{ ...linkStyle, color: '#213547', padding: '0.5rem 1rem', textAlign: 'left', cursor: 'pointer' }}
+                        onClick={() => {
+                          localStorage.removeItem('currentUser');
+                          setCurrentUser(null);
+                          navigate('/');
+                        }}
+                      >
+                        Logout
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <Link style={{ ...linkStyle, color: '#213547', padding: '0.5rem 1rem', textAlign: 'left' }} to="/login">Login</Link>
+                      <Link style={{ ...linkStyle, color: '#213547', padding: '0.5rem 1rem', textAlign: 'left' }} to="/register">Registro</Link>
+                    </>
+                  )}
                   <Link style={{ ...linkStyle, color: '#213547', padding: '0.5rem 1rem', textAlign: 'left' }} to="/sobrenosotros">Sobre Nosotros</Link>
                   <Link style={{ ...linkStyle, color: '#213547', padding: '0.5rem 1rem', textAlign: 'left' }} to="/ayuda">Ayuda</Link>
                   <Link style={{ ...linkStyle, color: '#213547', padding: '0.5rem 1rem', textAlign: 'left' }} to="/contact">Contacto</Link>

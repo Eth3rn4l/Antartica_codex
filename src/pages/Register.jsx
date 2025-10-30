@@ -90,23 +90,39 @@ function Register() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (validate()) {
-      console.log('Usuario registrado:', formData);
-      alert('Registro exitoso');
+    if (!validate()) return;
 
-      // Reinicia el formulario
-      setFormData({
-        nombre: '',
-        apellido: '',
-        email: '',
-        password: '',
-        confirmPassword: '',
-        telefono: '',
-        region: '',
-        comuna: '',
-        rut: '',
-      });
-    }
+    // Registrar via API
+    const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:4000';
+    fetch(`${API_BASE}/api/register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        nombre: formData.nombre,
+        apellido: formData.apellido,
+        email: formData.email,
+        password: formData.password,
+        telefono: formData.telefono,
+        region: formData.region,
+        comuna: formData.comuna,
+        rut: formData.rut,
+      })
+    })
+    .then(async (r) => {
+      if (!r.ok) {
+        const err = await r.json().catch(() => ({}));
+        throw new Error(err.error || 'Registro fallido');
+      }
+      return r.json();
+    })
+    .then(() => {
+      alert('Registro exitoso. Ya puedes iniciar sesión.');
+      setFormData({ nombre: '', apellido: '', email: '', password: '', confirmPassword: '', telefono: '', region: '', comuna: '', rut: '' });
+      window.location.href = '/login';
+    })
+    .catch((err) => {
+      alert(err.message);
+    });
   };
 
   return (

@@ -6,24 +6,43 @@ function Cart({ cartItems: propCart, removeFromCart: propRemove }) {
   // Estado local 'cartItems' que mantiene los productos en el carrito
   const [cartItems, setCartItems] = useState([]);
 
-  // useEffect se ejecuta una vez al montar el componente
-  // Obtiene los productos guardados en localStorage bajo la clave 'cart'
+  // Traer carrito desde la API cuando el componente monta
   useEffect(() => {
-    const savedCart = localStorage.getItem('cart');
-    if (savedCart) setCartItems(JSON.parse(savedCart)); // Actualiza el estado con los productos guardados
+    const token = localStorage.getItem('token');
+    if (!token) return; // no autenticado
+    fetch('/api/cart', { headers: { Authorization: `Bearer ${token}` } })
+      .then(async (r) => {
+        if (!r.ok) throw new Error('No se pudo cargar el carrito');
+        const data = await r.json();
+        setCartItems(data);
+      })
+      .catch(() => setCartItems([]));
   }, []); // Array vacío [] indica que solo se ejecuta al montar
 
   // Función para eliminar un producto del carrito
   const removeFromCart = (index) => {
-    // Filtra los productos, eliminando el que tiene el índice indicado
-    const updated = cartItems.filter((_, i) => i !== index);
-    setCartItems(updated); // Actualiza el estado local
-    localStorage.setItem('cart', JSON.stringify(updated)); // Actualiza el localStorage
-    if (propRemove) propRemove(index); // Llama a la función pasada por props si existe
+    const item = cartItems[index];
+    if (!item) return;
+    const token = localStorage.getItem('token');
+    if (!token) {
+      window.location.href = '/login';
+      return;
+    }
+    fetch(`/api/cart/${item.id}`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } })
+      .then(async (r) => {
+        if (!r.ok) {
+          const err = await r.json().catch(() => ({}));
+          throw new Error(err.error || 'Error eliminando del carrito');
+        }
+        const updated = cartItems.filter((_, i) => i !== index);
+        setCartItems(updated);
+        if (propRemove) propRemove(index);
+      })
+      .catch((e) => alert(e.message));
   };
 
   // Calcula el total de precios de todos los productos en el carrito
-  const total = cartItems.reduce((sum, item) => sum + item.price, 0);
+  const total = cartItems.reduce((sum, item) => sum + (item.price || 0) * (item.quantity || 1), 0);
 
   // Renderizado del componente
   return (

@@ -7,39 +7,71 @@ import SidebarCategorias from '../components/SidebarCategorias'; // Menú latera
 import './Home.css';                                  // CSS del carousel horizontal y otros estilos
 
 // ===========================================
-// Lista inicial de libros disponibles
-// Cada libro tiene id, título, autor, precio, imagen y descripción
+// Lista inicial de libros disponibles (usada si no existe 'books' en localStorage)
+// Añadimos campo stock por defecto
 // ===========================================
 const initialBooks = [
-  { id: 1, title: "Cien Años de Soledad", author: "Gabriel García Márquez", price: 12000, image: "/assets/cienanos.png", description: "Una novela mágica y realista sobre la familia Buendía." },
-  { id: 2, title: "El Principito", author: "Antoine de Saint-Exupéry", price: 8000, image: "/assets/principito.png", description: "Un clásico cuento filosófico sobre la vida y la amistad." },
-  { id: 3, title: "1984", author: "George Orwell", price: 15000, image: "/assets/1984.png", description: "Una novela distópica sobre vigilancia y control totalitario." },
-  { id: 4, title: "Harry Potter y la Piedra Filosofal", author: "J.K. Rowling", price: 10000, image: "/assets/piedrafil.png", description: "El inicio de la saga donde Harry descubre que es un mago." },
-  { id: 5, title: "Harry Potter y la Cámara Secreta", author: "J.K. Rowling", price: 10500, image: "/assets/camarasecreta.png", description: "Una nueva amenaza acecha a los estudiantes de Hogwarts." },
-  { id: 6, title: "Harry Potter y el Prisionero de Azkaban", author: "J.K. Rowling", price: 11000, image: "/assets/azkaban.png", description: "Harry enfrenta el peligroso misterio de Sirius Black." },
-  { id: 7, title: "Harry Potter y el Cáliz de Fuego", author: "J.K. Rowling", price: 12000, image: "/assets/calizdefuego.png", description: "Harry participa en el Torneo de los Tres Magos." },
-  { id: 8, title: "Harry Potter y la Orden del Fénix", author: "J.K. Rowling", price: 12500, image: "/assets/ordenfenix.png", description: "La resistencia contra Voldemort comienza a fortalecerse." },
-  { id: 9, title: "Harry Potter y el Misterio del Príncipe", author: "J.K. Rowling", price: 13000, image: "/assets/misprince.png", description: "Harry descubre secretos oscuros sobre Voldemort." }
+  { id: 1, title: "Cien Años de Soledad", author: "Gabriel García Márquez", price: 12000, image: "/assets/cienanos.png", description: "Una novela mágica y realista sobre la familia Buendía.", stock: 10 },
+  { id: 2, title: "El Principito", author: "Antoine de Saint-Exupéry", price: 8000, image: "/assets/principito.png", description: "Un clásico cuento filosófico sobre la vida y la amistad.", stock: 10 },
+  { id: 3, title: "1984", author: "George Orwell", price: 15000, image: "/assets/1984.png", description: "Una novela distópica sobre vigilancia y control totalitario.", stock: 10 },
+  { id: 4, title: "Harry Potter y la Piedra Filosofal", author: "J.K. Rowling", price: 10000, image: "/assets/piedrafil.png", description: "El inicio de la saga donde Harry descubre que es un mago.", stock: 10 },
+  { id: 5, title: "Harry Potter y la Cámara Secreta", author: "J.K. Rowling", price: 10500, image: "/assets/camarasecreta.png", description: "Una nueva amenaza acecha a los estudiantes de Hogwarts.", stock: 10 },
+  { id: 6, title: "Harry Potter y el Prisionero de Azkaban", author: "J.K. Rowling", price: 11000, image: "/assets/azkaban.png", description: "Harry enfrenta el peligroso misterio de Sirius Black.", stock: 10 },
+  { id: 7, title: "Harry Potter y el Cáliz de Fuego", author: "J.K. Rowling", price: 12000, image: "/assets/calizdefuego.png", description: "Harry participa en el Torneo de los Tres Magos.", stock: 10 },
+  { id: 8, title: "Harry Potter y la Orden del Fénix", author: "J.K. Rowling", price: 12500, image: "/assets/ordenfenix.png", description: "La resistencia contra Voldemort comienza a fortalecerse.", stock: 10 },
+  { id: 9, title: "Harry Potter y el Misterio del Príncipe", author: "J.K. Rowling", price: 13000, image: "/assets/misprince.png", description: "Harry descubre secretos oscuros sobre Voldemort.", stock: 10 }
 ];
 
 // ===========================================
 // Componente Home
 // ===========================================
 function Home() {
-  // Estado del carrito, inicializado desde localStorage si existe
-  const [cart, setCart] = useState(() => JSON.parse(localStorage.getItem('cart')) || []);
+  // Estado de libros (stock) persistido en localStorage
+  const [books, setBooks] = useState(initialBooks);
+  // Estado del carrito local (usado solo para UI local); Cart component gestionará su propio fetch
+  const [cart, setCart] = useState([]);
   // Estado de comentarios agregados por los usuarios
   const [comments, setComments] = useState([]);
 
-  // Guardar el carrito en localStorage cada vez que cambie
+  // Cargar libros desde la API al montar
   useEffect(() => {
-    localStorage.setItem('cart', JSON.stringify(cart));
-  }, [cart]);
+    fetch('/api/books')
+      .then((r) => r.json())
+      .then((data) => setBooks(data))
+      .catch(() => setBooks(initialBooks));
+  }, []);
 
-  // Función para agregar un libro al carrito
-  const addToCart = (book) => setCart([...cart, book]);
-  // Función para eliminar un libro del carrito por índice
-  const removeFromCart = (index) => setCart(cart.filter((_, i) => i !== index));
+  // Función para agregar un libro al carrito (reduce stock)
+  const addToCart = (book) => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      window.location.href = '/login';
+      return;
+    }
+    fetch('/api/cart', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ book_id: book.id, quantity: 1 })
+    }).then(async (r) => {
+      if (!r.ok) {
+        const err = await r.json().catch(() => ({}));
+        throw new Error(err.error || 'Error añadiendo al carrito');
+      }
+      // actualizar stock localmente
+      setBooks((prev) => prev.map((b) => b.id === book.id ? { ...b, stock: b.stock - 1 } : b));
+      // opcional: actualizar cart local para mostrar el panel
+      setCart((c) => [...c, book]);
+    }).catch((err) => alert(err.message));
+  };
+  // Función para eliminar un libro del carrito por índice (y devolver stock)
+  const removeFromCart = (index) => {
+    // Esta función local mantiene la UI; la eliminación real se hace en Cart component vía API
+    const item = cart[index];
+    if (item) {
+      setBooks((prev) => prev.map((b) => b.id === item.id ? { ...b, stock: b.stock + 1 } : b));
+    }
+    setCart((c) => c.filter((_, i) => i !== index));
+  };
   // Función para agregar un nuevo comentario
   const handleNewComment = (commentData) => setComments([...comments, commentData]);
 
@@ -68,7 +100,7 @@ function Home() {
           =========================================== */}
     <h2 style={{ ...titleStyle, color: '#194C57' }}>Libros Disponibles</h2>
       <div style={booksGridStyle}>
-        {initialBooks.map((book) => (
+        {books.map((book) => (
           <BookCard key={book.id} book={book} addToCart={addToCart} />
         ))}
       </div>
@@ -109,9 +141,9 @@ function Home() {
       </div>
 
   {/* ...existing code... */}
-      {cart.length > 0 && (
+      {localStorage.getItem('token') && (
         <div style={cartSectionStyle}>
-          <Cart cartItems={cart} removeFromCart={removeFromCart} />
+          <Cart />
           <CommentForm onSubmit={handleNewComment} />
         </div>
       )}

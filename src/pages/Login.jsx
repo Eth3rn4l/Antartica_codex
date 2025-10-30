@@ -43,19 +43,35 @@ function Login() {
       return;
     }
 
-    // Verificar si es el admin
-    if (formData.email === 'admin@admin.com' && formData.password === 'admin123') {
+    // Determinar base de la API (soporta VITE_API_URL o fallback a localhost:4000)
+    const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:4000';
+    // Autenticar contra la API
+    fetch(`${API_BASE}/api/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: formData.email, password: formData.password })
+    })
+    .then(async (r) => {
+      if (!r.ok) {
+        const err = await r.json().catch(() => ({}));
+        throw new Error(err.error || 'Login failed');
+      }
+      return r.json();
+    })
+    .then((data) => {
+      // Guardar token y currentUser
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('currentUser', JSON.stringify(data.user));
       setError('');
-      console.log('Administrador logueado');
-      // Redirigir a la vista de administrador
-      window.location.href = '/adminview';
-      return;
-    }
-
-    // Login para usuarios normales
-    setError('');
-    console.log('Usuario logueado:', formData);
-    alert('Login exitoso');
+      if (data.user.role === 'admin') {
+        window.location.href = '/adminview';
+      } else {
+        window.location.href = '/';
+      }
+    })
+    .catch((err) => {
+      setError(err.message);
+    });
   };
 
   return (
