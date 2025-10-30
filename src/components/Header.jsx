@@ -142,8 +142,8 @@ function Header() {
                     </>
                   ) : (
                     <>
-                      <Link style={{ ...linkStyle, color: '#213547', padding: '0.5rem 1rem', textAlign: 'left' }} to="/login">Login</Link>
-                      <Link style={{ ...linkStyle, color: '#213547', padding: '0.5rem 1rem', textAlign: 'left' }} to="/register">Registro</Link>
+                      <Link style={{ ...linkStyle, color: '#213547', padding: '0.5rem 1rem', textAlign: 'left' }} to="/login">Inicia Sesión</Link>
+                      <Link style={{ ...linkStyle, color: '#213547', padding: '0.5rem 1rem', textAlign: 'left' }} to="/register">Registrate</Link>
                     </>
                   )}
                   <Link style={{ ...linkStyle, color: '#213547', padding: '0.5rem 1rem', textAlign: 'left' }} to="/sobrenosotros">Sobre Nosotros</Link>
