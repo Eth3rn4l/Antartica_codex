@@ -258,6 +258,39 @@ app.delete('/api/cart/:id', authMiddleware, async (req, res) => {
   }
 });
 
+// Checkout endpoint: for clients to complete purchase
+app.post('/api/cart/checkout', authMiddleware, async (req, res) => {
+  try {
+    // only clients can checkout
+    if (!req.user || req.user.role !== 'client') return res.status(403).json({ error: 'Only clients can checkout' });
+    const pool = await getPool();
+    const conn = await pool.getConnection();
+    try {
+      await conn.beginTransaction();
+      // fetch items in cart for the user
+      const [items] = await conn.query('SELECT id, book_id, quantity FROM cart_items WHERE user_id = ?', [req.user.id]);
+      if (!items || items.length === 0) {
+        await conn.rollback();
+        conn.release();
+        return res.status(400).json({ error: 'Cart is empty' });
+      }
+      // NOTE: stock was already decreased when adding to cart in this app's flow
+      // To complete checkout we simply remove the cart items so they are no longer reserved
+      await conn.query('DELETE FROM cart_items WHERE user_id = ?', [req.user.id]);
+      await conn.commit();
+      conn.release();
+      return res.json({ success: true });
+    } catch (err) {
+      await conn.rollback();
+      conn.release();
+      throw err;
+    }
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: 'Server error' });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`API server running on http://localhost:${PORT}`);
 });

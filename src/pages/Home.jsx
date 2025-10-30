@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from 'react';
 import BookCard from '../components/BookCard';        // Componente que muestra un libro con flip card
 import CommentForm from '../components/CommentForm';  // Formulario para agregar comentarios
-import Cart from '../components/Cart';                // Carrito de compras
 import SidebarCategorias from '../components/SidebarCategorias'; // Menú lateral de categorías
 import './Home.css';                                  // CSS del carousel horizontal y otros estilos
 
@@ -151,7 +150,6 @@ function Home() {
   {/* ...existing code... */}
       {localStorage.getItem('token') && (
         <div style={cartSectionStyle}>
-          <Cart />
           <CommentForm onSubmit={handleNewComment} />
         </div>
       )}

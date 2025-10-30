@@ -71,7 +71,8 @@ const formStyle = {
   display: 'flex',
   flexDirection: 'column',
   gap: '0.5rem',
-  maxWidth: '500px',
+  maxWidth: '1000px',
+  width: '100%',
   marginTop: '2rem',
   padding: '1rem',
   border: '1px solid #646cff',
@@ -82,7 +83,8 @@ const formStyle = {
 
 // Estilos en línea para el textarea
 const textareaStyle = {
-  minHeight: '80px',
+  minHeight: '120px',
+  width: '100%',
   padding: '0.5rem',
   borderRadius: '4px',
   border: '1px solid #ccc',

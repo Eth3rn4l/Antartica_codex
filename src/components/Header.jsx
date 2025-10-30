@@ -14,52 +14,56 @@ function Header() {
   const [currentUser, setCurrentUser] = useState(null);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:4000';
-    const token = localStorage.getItem('token');
-    const updateCartCount = async () => {
-      const t = localStorage.getItem('token');
-      if (t) {
-        try {
-          const res = await fetch(`${API_BASE}/api/cart`, { headers: { Authorization: `Bearer ${t}` } });
-          if (!res.ok) throw new Error('No auth');
-          const data = await res.json();
-          // sumar cantidades (cada item tiene quantity)
-          const sum = data.reduce((s, it) => s + (it.quantity || 1), 0);
-          setCartItems(sum);
-        } catch (e) {
-          setCartItems(0);
-        }
-      } else {
-        const c = JSON.parse(localStorage.getItem('cart') || '[]');
-        // c puede ser array de objetos con quantity o simple lista
-        const sum = Array.isArray(c) ? c.reduce((s, it) => s + (it.quantity || 1), 0) : 0;
+  // API base URL (consistente)
+  const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:4000';
+
+  // Función para actualizar el contador del carrito (suma quantities cuando existan)
+  const updateCartCount = async () => {
+    const t = localStorage.getItem('token');
+    if (t) {
+      try {
+        const res = await fetch(`${API_BASE}/api/cart`, { headers: { Authorization: `Bearer ${t}` } });
+        if (!res.ok) throw new Error('No auth');
+        const data = await res.json();
+        const sum = Array.isArray(data) ? data.reduce((s, it) => s + (it.quantity || 1), 0) : 0;
         setCartItems(sum);
+      } catch (e) {
+        setCartItems(0);
       }
-    };
-    // inicializar
+    } else {
+      const c = JSON.parse(localStorage.getItem('cart') || '[]');
+      const sum = Array.isArray(c) ? c.reduce((s, it) => s + (it.quantity || 1), 0) : 0;
+      setCartItems(sum);
+    }
+  };
+
+  // Handler expuesto para eventos personalizados
+  const cartHandler = () => updateCartCount();
+
+  useEffect(() => {
+    // inicializar contador y usuario
     updateCartCount();
-    // exponer la funcion para reuso en handlers
-    const cartHandler = () => updateCartCount();
     const u = localStorage.getItem('currentUser');
     if (u) setCurrentUser(JSON.parse(u));
   }, []);
 
-  // Escuchar cambios simples de almacenamiento (otras pestañas)
+  // Escuchar cambios simples de almacenamiento (otras pestañas) y custom events
   useEffect(() => {
     const handler = () => {
       const token = localStorage.getItem('token');
       if (token) {
-        fetch('/api/cart', { headers: { Authorization: `Bearer ${token}` } })
+        fetch(`${API_BASE}/api/cart`, { headers: { Authorization: `Bearer ${token}` } })
           .then(async (r) => {
             if (!r.ok) throw new Error('No auth');
             const data = await r.json();
-            setCartItems(data.length);
+            const sum = Array.isArray(data) ? data.reduce((s, it) => s + (it.quantity || 1), 0) : 0;
+            setCartItems(sum);
           })
           .catch(() => setCartItems(0));
       } else {
         const c = JSON.parse(localStorage.getItem('cart') || '[]');
-        setCartItems(c.length);
+        const sum = Array.isArray(c) ? c.reduce((s, it) => s + (it.quantity || 1), 0) : 0;
+        setCartItems(sum);
       }
       const u = localStorage.getItem('currentUser');
       setCurrentUser(u ? JSON.parse(u) : null);

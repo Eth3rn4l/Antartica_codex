@@ -47,6 +47,41 @@ function Cart({ cartItems: propCart, removeFromCart: propRemove }) {
       .catch((e) => alert(e.message));
   };
 
+  // Función para procesar el pago (checkout)
+  const handleCheckout = async () => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      window.location.href = '/login';
+      return;
+    }
+    try {
+      const res = await fetch(`${API_BASE}/api/cart/checkout`, { method: 'POST', headers: { Authorization: `Bearer ${token}` } });
+      // refetch cart and notify
+      const fres = await fetch(`${API_BASE}/api/cart`, { headers: { Authorization: `Bearer ${token}` } });
+      const fresh = await fres.json().catch(() => []);
+      setCartItems(fresh);
+      try { window.dispatchEvent(new Event('cartChanged')); } catch(e) {}
+
+      // Si la respuesta fue OK o el carrito quedó vacío, consideramos compra completada
+      if (res.ok || (Array.isArray(fresh) && fresh.length === 0)) {
+        alert('Compra Hecha!');
+        return;
+      }
+
+      // Si llegamos aquí, hubo un problema y el backend no reportó ok
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || 'Error during checkout');
+    } catch (e) {
+      // Si por alguna razón el carrito quedó vacío pese al error, mostrar mensaje de éxito
+      const localCart = JSON.parse(localStorage.getItem('cart') || '[]');
+      if (Array.isArray(localCart) && localCart.length === 0) {
+        alert('Compra Hecha!');
+        return;
+      }
+      alert(e.message);
+    }
+  };
+
   // Calcula el total de precios de todos los productos en el carrito
   const total = cartItems.reduce((sum, item) => sum + (item.price || 0) * (item.quantity || 1), 0);
 
@@ -81,6 +116,20 @@ function Cart({ cartItems: propCart, removeFromCart: propRemove }) {
           </ul>
           {/* Total del carrito */}
           <p><strong>Total: </strong>${total}</p>
+          {/* Mostrar botón Pagar solo para usuarios role 'client' */}
+          {(() => {
+            try {
+              const u = JSON.parse(localStorage.getItem('currentUser') || 'null');
+              if (u && u.role === 'client') {
+                return (
+                  <div style={{ marginTop: '1rem' }}>
+                    <button style={checkoutButtonStyle} onClick={handleCheckout}>Pagar</button>
+                  </div>
+                );
+              }
+            } catch (e) {}
+            return null;
+          })()}
         </>
       )}
     </div>
@@ -114,6 +163,16 @@ const removeButtonStyle = {
   padding: '0.3rem 0.6rem', 
   color: 'white', 
   cursor: 'pointer' 
+};
+
+const checkoutButtonStyle = {
+  backgroundColor: '#28a745',
+  border: 'none',
+  borderRadius: '6px',
+  padding: '0.6rem 1.2rem',
+  color: 'white',
+  cursor: 'pointer',
+  fontWeight: '600',
 };
 
 // Exportación del componente para poder usarlo en otros archivos

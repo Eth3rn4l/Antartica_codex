@@ -105,15 +105,27 @@ async function initDb() {
     ['Cliente', 'Prueba', 'cliente@cliente.com', hashPassword('cliente123'), '+56912345678', 'Metropolitana', 'Santiago', '20.142.499-2', 'client']
   );
 
-  // Insertar algunos libros de ejemplo si no hay ninguno
-  const [books] = await p.query('SELECT id FROM books LIMIT 1');
-  if (books.length === 0) {
-    const sample = [
-      ['Cien Años de Soledad', 'Gabriel García Márquez', 12000, '/assets/cienanos.png', 'Una novela mágica y realista sobre la familia Buendía.', 10],
-      ['El Principito', 'Antoine de Saint-Exupéry', 8000, '/assets/principito.png', 'Un clásico cuento filosófico sobre la vida y la amistad.', 10],
-    ];
-    for (const b of sample) {
-      await p.query(`INSERT INTO books (title, author, price, image, description, stock) VALUES (?, ?, ?, ?, ?, ?)` , b);
+  // Lista de libros que queremos asegurar en la BD con stock 10
+  const desiredBooks = [
+    { title: 'Cien Años de Soledad', author: 'Gabriel García Márquez', price: 12000, image: '/assets/cienanos.png', description: 'Una novela mágica y realista sobre la familia Buendía.' },
+    { title: 'El Principito', author: 'Antoine de Saint-Exupéry', price: 8000, image: '/assets/principito.png', description: 'Un clásico cuento filosófico sobre la vida y la amistad.' },
+    { title: '1984', author: 'George Orwell', price: 9500, image: '/assets/1984.png', description: 'Distopía clásica sobre vigilancia y totalitarismo.' },
+    { title: 'Harry Potter y la Piedra Filosofal', author: 'J.K. Rowling', price: 11000, image: '/assets/piedrafil.png', description: 'El inicio de la saga del joven mago.' },
+    { title: 'Harry Potter y la Cámara Secreta', author: 'J.K. Rowling', price: 11000, image: '/assets/camarasecreta.png', description: 'La segunda aventura de Harry en Hogwarts.' },
+    { title: 'Harry Potter y el Prisionero de Azkaban', author: 'J.K. Rowling', price: 11000, image: '/assets/azkaban.png', description: 'Tercera entrega con misterio y viaje en el tiempo.' },
+    { title: 'Harry Potter y el Cáliz de Fuego', author: 'J.K. Rowling', price: 12000, image: '/assets/calizdefuego.png', description: 'Torneo de los tres magos y peligros crecientes.' },
+    { title: 'Harry Potter y la Orden del Fénix', author: 'J.K. Rowling', price: 13000, image: '/assets/ordenfenix.png', description: 'La resistencia contra las fuerzas oscuras se organiza.' },
+    { title: 'Harry Potter y el Misterio del Príncipe', author: 'J.K. Rowling', price: 13000, image: '/assets/misprince.png', description: 'Se revelan secretos del pasado y alianzas importantes.' },
+  ];
+
+  // Para cada libro, insertar si no existe (evitar duplicados por título)
+  for (const b of desiredBooks) {
+    const [exists] = await p.query('SELECT id FROM books WHERE title = ? LIMIT 1', [b.title]);
+    if (!exists || exists.length === 0) {
+      await p.query(`INSERT INTO books (title, author, price, image, description, stock) VALUES (?, ?, ?, ?, ?, ?)` , [b.title, b.author, b.price, b.image, b.description, 10]);
+    } else {
+      // opcional: actualizar stock si está por debajo de 10
+      await p.query('UPDATE books SET stock = GREATEST(stock, 10) WHERE id = ?', [exists[0].id]);
     }
   }
 
