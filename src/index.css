@@ -8,9 +8,20 @@ body {
 a {
   color: #194C57;
 }
+:root {
+  /* Design tokens for buttons and admin UI */
+  --btn-primary: #0f766e; /* teal */
+  --btn-secondary: #0369a1; /* blue */
+  --btn-danger: #ef4444; /* red */
+  --btn-disabled: #9ca3af; /* gray */
+  --admin-badge: #065f46; /* dark green */
+  --color-bg-light: #f4f4f5;
+  --color-text-light: #213547;
+}
+
 button {
-  background-color: #194C57;
-  color: #fff;
+  background-color: var(--btn-primary);
+  color: #ffffff;
 }
   --color-text-dark: #fafeff;
   --color-primary: #194C57;

@@ -1,3 +1,5 @@
+/* eslint-env node */
+/* global process */
 import express from 'express';
 import cors from 'cors';
 import { initDb, getPool, hashPassword } from './database.js';
@@ -26,7 +28,7 @@ async function authMiddleware(req, res, next) {
     const payload = jwt.verify(token, JWT_SECRET);
     req.user = payload;
     next();
-  } catch (e) {
+  } catch {
     return res.status(401).json({ error: 'Invalid token' });
   }
 }

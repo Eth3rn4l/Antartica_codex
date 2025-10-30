@@ -4,20 +4,20 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import './index.css';
 import Header from './components/Header';
 import ErrorBoundary from './components/ErrorBoundary';
-import Home from './pages/Home';
+import Home from './Views/Home';
 import Cart from './components/Cart';
-import Login from './pages/Login';
-import Register from './pages/Register';
-import Ayuda from './pages/Ayuda';
-import Contact from './pages/Contact';
+import Login from './Views/Login';
+import Register from './Views/Register';
+import Ayuda from './Views/Ayuda';
+import Contact from './Views/Contact';
 import Footer from './Footer'; // Importa el Footer
-import SobreNosotros from './pages/SobreNosotros'; // Importa el componente SobreNosotros
-import AdminView from './pages/AdminView';
-import AdminBooks from './pages/AdminBooks';
-import AdminUsers from './pages/AdminUsers';
-import ClienteView from './pages/ClienteView';
+import SobreNosotros from './Views/SobreNosotros'; // Importa el componente SobreNosotros
+import AdminView from './Views/AdminView';
+import AdminBooks from './Views/AdminBooks';
+import AdminUsers from './Views/AdminUsers';
+import ClienteView from './Views/ClienteView';
 import ProtectedRoute from './components/ProtectedRoute';
-import Profile from './pages/Profile';
+import Profile from './Views/Profile';
 
 // Inicializar usuarios por defecto (admin y cliente) si no existen
 // Nota: esto sólo afecta al localStorage del navegador donde se ejecute la app
@@ -62,10 +62,10 @@ try {
     }
   });
   localStorage.setItem('users', JSON.stringify(users));
-} catch (e) {
+} catch {
   // Si localStorage no está disponible en este entorno, ignorar
   // (en producción se debe usar un backend seguro)
-  // console.warn('No se pudo inicializar usuarios por defecto', e);
+  // console.warn('No se pudo inicializar usuarios por defecto');
 }
 
 createRoot(document.getElementById('root')).render(

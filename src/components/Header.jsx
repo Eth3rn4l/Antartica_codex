@@ -10,7 +10,7 @@ function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const closeTimeout = React.useRef();
   const [cartItems, setCartItems] = useState(0);
-  const [darkMode, setDarkMode] = useState(false);
+  const [_darkMode, _setDarkMode] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
   const navigate = useNavigate();
 
@@ -27,7 +27,7 @@ function Header() {
         const data = await res.json();
         const sum = Array.isArray(data) ? data.reduce((s, it) => s + (it.quantity || 1), 0) : 0;
         setCartItems(sum);
-      } catch (e) {
+      } catch {
         setCartItems(0);
       }
     } else {
@@ -193,12 +193,12 @@ const headerStyle = {
   alignItems: "center",
 };
 
-const navStyle = {
+const _navStyle = {
   display: "flex",
   gap: "1rem", // Separación entre links
 };
 
-const rightBlockStyle = {
+const _rightBlockStyle = {
   display: "flex",
   alignItems: "center",
   gap: "1rem", // Separación entre carrito y hamburguesa
@@ -211,7 +211,7 @@ const rightBlockStyle = {
       letterSpacing: '0.2em', // Alarga las líneas
     };
 
-const menuStyle = {
+const _menuStyle = {
   display: "flex",
   flexDirection: "column", // Apila los links verticalmente
   position: "absolute",
@@ -249,7 +249,7 @@ const cartCountStyle = {
 };
 
 // Centrar buscador horizontalmente
-const searchContainerStyle = {
+const _searchContainerStyle = {
   position: "absolute",
   left: "50%",
   transform: "translateX(-50%)",

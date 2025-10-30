@@ -15,7 +15,7 @@ function ProtectedRoute({ allowedRoles = [], children }) {
     if (!allowedRoles || allowedRoles.length === 0) return children;
     if (allowedRoles.includes(user.role)) return children;
     return <Navigate to="/" replace />;
-  } catch (e) {
+  } catch {
     return <Navigate to="/login" replace />;
   }
 }

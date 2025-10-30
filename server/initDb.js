@@ -1,3 +1,5 @@
+/* eslint-env node */
+/* global process */
 import { initDb } from './database.js';
 
 (async () => {

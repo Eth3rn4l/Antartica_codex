@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:4000';
 
 // Componente funcional Cart que recibe props: cartItems y removeFromCart
-function Cart({ cartItems: propCart, removeFromCart: propRemove }) {
+function Cart({ removeFromCart: _propRemove }) {
   // Estado local 'cartItems' que mantiene los productos en el carrito
   const [cartItems, setCartItems] = useState([]);
 
@@ -41,8 +41,8 @@ function Cart({ cartItems: propCart, removeFromCart: propRemove }) {
   const fresh = await res.json().catch(() => []);
   setCartItems(fresh);
   // notify other parts of the app (header) in same tab
-  try { window.dispatchEvent(new Event('cartChanged')); } catch(e) {}
-        if (propRemove) propRemove(index);
+            try { window.dispatchEvent(new Event('cartChanged')); } catch { /* ignore */ }
+    if (_propRemove) _propRemove(index);
       })
       .catch((e) => alert(e.message));
   };
@@ -60,7 +60,7 @@ function Cart({ cartItems: propCart, removeFromCart: propRemove }) {
       const fres = await fetch(`${API_BASE}/api/cart`, { headers: { Authorization: `Bearer ${token}` } });
       const fresh = await fres.json().catch(() => []);
       setCartItems(fresh);
-      try { window.dispatchEvent(new Event('cartChanged')); } catch(e) {}
+        try { window.dispatchEvent(new Event('cartChanged')); } catch { /* ignore */ }
 
       // Si la respuesta fue OK o el carrito quedó vacío, consideramos compra completada
       if (res.ok || (Array.isArray(fresh) && fresh.length === 0)) {
@@ -127,7 +127,7 @@ function Cart({ cartItems: propCart, removeFromCart: propRemove }) {
                   </div>
                 );
               }
-            } catch (e) {}
+            } catch { /* ignore parse errors */ }
             return null;
           })()}
         </>

@@ -39,7 +39,7 @@ const footerItemStyle = {
   fontWeight: '500',
 };
 
-const footerStyle = {
+const _footerStyle = {
   padding: '1rem',
   backgroundColor: '#194C57',
   color: '#fff',
