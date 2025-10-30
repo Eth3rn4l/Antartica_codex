@@ -1,5 +1,6 @@
 // src/pages/Login.jsx
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 /**
  * Componente Login
@@ -106,6 +107,12 @@ function Login() {
 
           {/* Botón de envío */}
           <button type="submit" style={buttonStyle}>Entrar</button>
+
+          {/* Enlace a registro debajo del botón */}
+          <p style={registerTextStyle}>
+            ¿No tienes cuenta?{' '}
+            <Link to="/register" style={registerLinkStyle}>Regístrate aquí</Link>
+          </p>
         </form>
       </div>
     </div>
@@ -184,6 +191,20 @@ const buttonStyle = {
   fontWeight: '600',
   cursor: 'pointer',
   transition: 'background 0.3s, transform 0.2s',
+};
+
+// Texto y enlace de registro
+const registerTextStyle = {
+  textAlign: 'center',
+  marginTop: '0.8rem',
+  fontSize: '0.95rem',
+  color: '#194C57',
+};
+
+const registerLinkStyle = {
+  color: '#646cff',
+  textDecoration: 'none',
+  fontWeight: '600',
 };
 
 export default Login;
