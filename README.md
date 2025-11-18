@@ -1,12 +1,36 @@
-# React + Vite
+# Antartica Codex
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Aplicación React + Vite para la librería Antartica con vistas de cliente y administrador.
+La estructura está organizada por dominios (api, hooks, context, pages) para separar
+responsabilidades y permitir reutilización.
 
-Currently, two official plugins are available:
+## Estructura del proyecto
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+```
+src/
+├── api/                  # cliente HTTP y servicios (productos, usuarios, carrito)
+├── assets/               # imágenes y recursos estáticos
+├── components/           # componentes reutilizables (Header, BookCard, Cart, etc.)
+├── context/              # proveedores de autenticación y carrito
+├── hooks/                # hooks para productos, usuario y carrito
+├── pages/                # páginas (Home, Login, Admin, Perfil, etc.)
+├── styles/               # estilos globales
+├── utils/                # utilidades (RUT, formato de fecha, tarjeta, helpers)
+├── App.jsx               # rutas y layout principal
+└── main.jsx              # punto de entrada de React
+```
 
-## Expanding the ESLint configuration
+## Scripts
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- `npm run dev` — servidor de desarrollo con Vite.
+- `npm run build` — compilación de la aplicación para producción.
+- `npm run preview` — vista previa local del build de producción.
+- `npm test` — suite de pruebas con Vitest.
+- `npm run lint` — linting del código con ESLint.
+
+## Notas
+
+- Las rutas protegidas utilizan `ProtectedRoute` y el contexto de autenticación.
+- El estado global del carrito se maneja con `CarritoContext` y el hook `useCarrito`.
+- Los servicios de `src/api/services` agrupan llamadas HTTP a través del cliente configurado en
+  `src/api/client.js`.

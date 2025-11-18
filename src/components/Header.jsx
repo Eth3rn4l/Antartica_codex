@@ -1,81 +1,36 @@
 // Importación de dependencias
-import React, { useState, useEffect } from "react";       // React y hooks
+import React, { useEffect, useState } from "react";       // React y hooks
 import { Link, useNavigate } from "react-router-dom";       // Componente Link para navegación sin recargar la página
 import SidebarCategorias from "./SidebarCategorias";
 import "./SearchInline.css";
 import "./Header.css";                         // Importación del CSS que contiene estilos para el header, input y buscador
+import { useCarritoContext } from '../context/CarritoContext.jsx';
+import { useAuth } from '../context/AuthContext.jsx';
 
 // Componente funcional Header
 function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const closeTimeout = React.useRef();
-  const [cartItems, setCartItems] = useState(0);
-  const [_darkMode, _setDarkMode] = useState(false);
-  const [currentUser, setCurrentUser] = useState(null);
+  const cartContext = useCarritoContext();
+  const auth = useAuth();
   const navigate = useNavigate();
 
-  // API base URL (consistente)
-  const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:4000';
+  const cartItems = Array.isArray(cartContext?.items)
+    ? cartContext.items.reduce((s, it) => s + (it.quantity || 1), 0)
+    : 0;
 
-  // Función para actualizar el contador del carrito (suma quantities cuando existan)
-  const updateCartCount = async () => {
-    const t = localStorage.getItem('token');
-    if (t) {
-      try {
-        const res = await fetch(`${API_BASE}/api/cart`, { headers: { Authorization: `Bearer ${t}` } });
-        if (!res.ok) throw new Error('No auth');
-        const data = await res.json();
-        const sum = Array.isArray(data) ? data.reduce((s, it) => s + (it.quantity || 1), 0) : 0;
-        setCartItems(sum);
-      } catch {
-        setCartItems(0);
-      }
-    } else {
-      const c = JSON.parse(localStorage.getItem('cart') || '[]');
-      const sum = Array.isArray(c) ? c.reduce((s, it) => s + (it.quantity || 1), 0) : 0;
-      setCartItems(sum);
+  const currentUser = auth?.currentUser || (() => {
+    try {
+      return JSON.parse(localStorage.getItem('currentUser') || 'null');
+    } catch {
+      return null;
     }
-  };
-
-  // Handler expuesto para eventos personalizados
-  const cartHandler = () => updateCartCount();
+  })();
 
   useEffect(() => {
-    // inicializar contador y usuario
-    updateCartCount();
-    const u = localStorage.getItem('currentUser');
-    if (u) setCurrentUser(JSON.parse(u));
-  }, []);
+    cartContext?.refresh?.();
+  }, [cartContext]);
 
-  // Escuchar cambios simples de almacenamiento (otras pestañas) y custom events
-  useEffect(() => {
-    const handler = () => {
-      const token = localStorage.getItem('token');
-      if (token) {
-        fetch(`${API_BASE}/api/cart`, { headers: { Authorization: `Bearer ${token}` } })
-          .then(async (r) => {
-            if (!r.ok) throw new Error('No auth');
-            const data = await r.json();
-            const sum = Array.isArray(data) ? data.reduce((s, it) => s + (it.quantity || 1), 0) : 0;
-            setCartItems(sum);
-          })
-          .catch(() => setCartItems(0));
-      } else {
-        const c = JSON.parse(localStorage.getItem('cart') || '[]');
-        const sum = Array.isArray(c) ? c.reduce((s, it) => s + (it.quantity || 1), 0) : 0;
-        setCartItems(sum);
-      }
-      const u = localStorage.getItem('currentUser');
-      setCurrentUser(u ? JSON.parse(u) : null);
-    };
-    window.addEventListener('storage', handler);
-    // custom event to update cart count within same tab
-    window.addEventListener('cartChanged', cartHandler);
-    return () => {
-      window.removeEventListener('storage', handler);
-      window.removeEventListener('cartChanged', cartHandler);
-    };
-  }, []);
   const logoUrl = '/assets/logo.png';
   return (
       <header style={headerStyle}>
@@ -143,7 +98,6 @@ function Header() {
                   {currentUser ? (
                     <>
                       <Link style={{ ...linkStyle, color: '#213547', padding: '0.5rem 1rem', textAlign: 'left' }} to="/profile">
-                        {/* Mostrar saludo con nombre si existe; para client mostrar nombre (Hola Nombre) */}
                         {currentUser.role === 'client'
                           ? `Hola ${currentUser.nombre || currentUser.email}`
                           : `Hola ${currentUser.nombre || currentUser.email}`}
@@ -154,8 +108,7 @@ function Header() {
                       <div
                         style={{ ...linkStyle, color: '#213547', padding: '0.5rem 1rem', textAlign: 'left', cursor: 'pointer' }}
                         onClick={() => {
-                          localStorage.removeItem('currentUser');
-                          setCurrentUser(null);
+                          auth?.logout?.();
                           navigate('/');
                         }}
                       >

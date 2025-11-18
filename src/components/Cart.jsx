@@ -1,85 +1,36 @@
 // Importación de React y hooks necesarios
-import React, { useState, useEffect } from 'react';
-
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:4000';
+import React from 'react';
+import { useCarritoContext } from '../context/CarritoContext.jsx';
 
 // Componente funcional Cart que recibe props: cartItems y removeFromCart
 function Cart({ removeFromCart: _propRemove }) {
-  // Estado local 'cartItems' que mantiene los productos en el carrito
-  const [cartItems, setCartItems] = useState([]);
-
-  // Traer carrito desde la API cuando el componente monta
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (!token) return; // no autenticado
-    fetch(`${API_BASE}/api/cart`, { headers: { Authorization: `Bearer ${token}` } })
-      .then(async (r) => {
-        if (!r.ok) throw new Error('No se pudo cargar el carrito');
-        const data = await r.json();
-        setCartItems(data);
-      })
-      .catch(() => setCartItems([]));
-  }, []); // Array vacío [] indica que solo se ejecuta al montar
+  const cartContext = useCarritoContext();
+  const cartItems = cartContext?.items || [];
 
   // Función para eliminar un producto del carrito
   const removeFromCart = (index) => {
     const item = cartItems[index];
     if (!item) return;
-    const token = localStorage.getItem('token');
-    if (!token) {
-      window.location.href = '/login';
-      return;
-    }
-    fetch(`${API_BASE}/api/cart/${item.id}`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } })
-      .then(async (r) => {
-        if (!r.ok) {
-          const err = await r.json().catch(() => ({}));
-          throw new Error(err.error || 'Error eliminando del carrito');
-        }
-  // refetch cart from server to ensure consistency and stock updates
-  const res = await fetch(`${API_BASE}/api/cart`, { headers: { Authorization: `Bearer ${token}` } });
-  const fresh = await res.json().catch(() => []);
-  setCartItems(fresh);
-  // notify other parts of the app (header) in same tab
-            try { window.dispatchEvent(new Event('cartChanged')); } catch { /* ignore */ }
-    if (_propRemove) _propRemove(index);
+    if (!cartContext?.removeItem) return;
+    cartContext.removeItem(item.id)
+      .then(() => {
+        if (_propRemove) _propRemove(index);
       })
       .catch((e) => alert(e.message));
   };
 
   // Función para procesar el pago (checkout)
   const handleCheckout = async () => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      window.location.href = '/login';
-      return;
-    }
-    try {
-      const res = await fetch(`${API_BASE}/api/cart/checkout`, { method: 'POST', headers: { Authorization: `Bearer ${token}` } });
-      // refetch cart and notify
-      const fres = await fetch(`${API_BASE}/api/cart`, { headers: { Authorization: `Bearer ${token}` } });
-      const fresh = await fres.json().catch(() => []);
-      setCartItems(fresh);
-        try { window.dispatchEvent(new Event('cartChanged')); } catch { /* ignore */ }
-
-      // Si la respuesta fue OK o el carrito quedó vacío, consideramos compra completada
-      if (res.ok || (Array.isArray(fresh) && fresh.length === 0)) {
-        alert('Compra Hecha!');
-        return;
-      }
-
-      // Si llegamos aquí, hubo un problema y el backend no reportó ok
-      const err = await res.json().catch(() => ({}));
-      throw new Error(err.error || 'Error during checkout');
-    } catch (e) {
-      // Si por alguna razón el carrito quedó vacío pese al error, mostrar mensaje de éxito
-      const localCart = JSON.parse(localStorage.getItem('cart') || '[]');
-      if (Array.isArray(localCart) && localCart.length === 0) {
-        alert('Compra Hecha!');
-        return;
-      }
-      alert(e.message);
-    }
+    if (!cartContext?.checkout) return;
+    cartContext.checkout()
+      .catch((e) => {
+        const localCart = JSON.parse(localStorage.getItem('cart') || '[]');
+        if (Array.isArray(localCart) && localCart.length === 0) {
+          alert('Compra Hecha!');
+          return;
+        }
+        alert(e.message);
+      });
   };
 
   // Calcula el total de precios de todos los productos en el carrito

@@ -1,23 +1,10 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter } from 'react-router-dom';
 import './index.css';
-import Header from './components/Header';
-import ErrorBoundary from './components/ErrorBoundary';
-import Home from './Views/Home';
-import Cart from './components/Cart';
-import Login from './Views/Login';
-import Register from './Views/Register';
-import Ayuda from './Views/Ayuda';
-import Contact from './Views/Contact';
-import Footer from './Footer'; // Importa el Footer
-import SobreNosotros from './Views/SobreNosotros'; // Importa el componente SobreNosotros
-import AdminView from './Views/AdminView';
-import AdminBooks from './Views/AdminBooks';
-import AdminUsers from './Views/AdminUsers';
-import ClienteView from './Views/ClienteView';
-import ProtectedRoute from './components/ProtectedRoute';
-import Profile from './Views/Profile';
+import App from './App.jsx';
+import { AuthProvider } from './context/AuthContext.jsx';
+import { CarritoProvider } from './context/CarritoContext.jsx';
 
 // Inicializar usuarios por defecto (admin y cliente) si no existen
 // Nota: esto sólo afecta al localStorage del navegador donde se ejecute la app
@@ -71,22 +58,11 @@ try {
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
-      <Header />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/cart" element={<ProtectedRoute allowedRoles={[ 'client', 'admin' ]}><Cart /></ProtectedRoute>} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/ayuda" element={<Ayuda />} /> {/* <--- Ruta */}
-        <Route path="/contact" element={<Contact />} /> {/* <--- Ruta */}
-        <Route path="/sobrenosotros" element={<SobreNosotros />} /> {/* Agrega esta línea */}
-  <Route path="/adminview" element={<ProtectedRoute allowedRoles={[ 'admin' ]}><ErrorBoundary><AdminView /></ErrorBoundary></ProtectedRoute>} />
-  <Route path="/admin/books" element={<ProtectedRoute allowedRoles={[ 'admin' ]}><ErrorBoundary><AdminBooks /></ErrorBoundary></ProtectedRoute>} />
-  <Route path="/admin/users" element={<ProtectedRoute allowedRoles={[ 'admin' ]}><ErrorBoundary><AdminUsers /></ErrorBoundary></ProtectedRoute>} />
-  <Route path="/admin/clients" element={<ProtectedRoute allowedRoles={[ 'admin' ]}><ErrorBoundary><ClienteView /></ErrorBoundary></ProtectedRoute>} />
-        <Route path="/profile" element={<ProtectedRoute allowedRoles={[ 'client', 'admin' ]}><Profile /></ProtectedRoute>} />
-      </Routes>
-      <Footer /> {/* Agrega el Footer aquí */}
+      <AuthProvider>
+        <CarritoProvider>
+          <App />
+        </CarritoProvider>
+      </AuthProvider>
     </BrowserRouter>
-  </StrictMode>
+  </StrictMode>,
 );

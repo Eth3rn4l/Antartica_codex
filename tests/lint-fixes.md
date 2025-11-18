@@ -21,14 +21,14 @@ Cambios aplicados (archivo -> breve explicación):
 - `src/App.jsx`:
   - `handleLogin` renombrado a `_handleLogin` (no estaba siendo usado).
 
-- `src/Footer.jsx`:
+- `src/components/Footer.jsx`:
   - `footerStyle` renombrado a `_footerStyle` para evitar warning de variable no usada.
 
-- `src/Views/Home.jsx`:
+- `src/pages/Home.jsx`:
   - `removeFromCart` renombrado a `_removeFromCart` (no usado en el componente).
   - Reemplacé `catch(e){}` por `catch(_e) { /* ignore dispatch errors */ }` en el `dispatchEvent` para evitar bloque vacío y variable no usada.
 
-- `src/Views/Profile.jsx`:
+- `src/pages/Profile.jsx`:
   - Moví la declaración `const [full, setFull] = React.useState(null);` por encima del `if (!raw)` para asegurar que los hooks se ejecuten en el mismo orden en cada render (corrige regla de hooks llamada condicionalmente).
 
 - `src/components/Cart.jsx`:
@@ -47,7 +47,7 @@ Cambios aplicados (archivo -> breve explicación):
 - `src/main.jsx`:
   - `catch (e)` renombrado a `catch (_e)` y comentario actualizado.
 
-- `src/Views/Login.jsx`:
+- `src/pages/Login.jsx`:
   - `redirect` y `setRedirect` renombrados a `_redirect` y `_setRedirect` para evitar warning si no se usan.
 
 Notas y siguientes pasos recomendados:

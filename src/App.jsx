@@ -1,55 +1,102 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
+import { Routes, Route, useLocation } from 'react-router-dom';
+import Header from './components/Header.jsx';
+import Footer from './components/Footer.jsx';
+import Home from './pages/Home.jsx';
+import Cart from './components/Cart.jsx';
+import Login from './pages/Login.jsx';
+import Register from './pages/Register.jsx';
+import Ayuda from './pages/Ayuda.jsx';
+import Contact from './pages/Contact.jsx';
+import SobreNosotros from './pages/SobreNosotros.jsx';
+import AdminView from './pages/AdminView.jsx';
+import AdminBooks from './pages/AdminBooks.jsx';
+import AdminUsers from './pages/AdminUsers.jsx';
+import ClienteView from './pages/ClienteView.jsx';
+import ProtectedRoute from './components/ProtectedRoute.jsx';
+import Profile from './pages/Profile.jsx';
+import ErrorBoundary from './components/ErrorBoundary.jsx';
 import './App.css';
-import Header from './components/Header';
-import Home from './Views/Home';
-import Login from './Views/Login';
-import Register from './Views/Register';
-import Ayuda from './Views/Ayuda';
-import Contact from './Views/Contact';
-import SobreNosotros from './Views/SobreNosotros';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import AdminView from './Views/AdminView';
+
+const TITLES = {
+  '/': 'Antártica - Home',
+  '/login': 'Antártica - Login',
+  '/register': 'Antártica - Registro',
+  '/ayuda': 'Antártica - Ayuda',
+  '/contact': 'Antártica - Contacto',
+  '/sobrenosotros': 'Antártica - Sobre Nosotros',
+};
 
 function App() {
-  const [userLoggedIn, setUserLoggedIn] = useState(false);
-  const [currentPage, setCurrentPage] = useState('home'); // 'home', 'login', 'register', 'help', 'contact'
+  const location = useLocation();
 
-  const navigate = (page) => setCurrentPage(page);
-  const _handleLogin = () => setUserLoggedIn(true);
-  const handleLogout = () => {
-    setUserLoggedIn(false);
-    setCurrentPage('home');
-  };
-
-  // Cambiar el título según la página
   useEffect(() => {
-    let title = 'Antártica - Tienda de Libros';
-    if (currentPage === 'home') title = 'Antártica - Home';
-    if (currentPage === 'login') title = 'Antártica - Login';
-    if (currentPage === 'register') title = 'Antártica - Registro';
-    if (currentPage === 'help') title = 'Antártica - Ayuda';
-    if (currentPage === 'contact') title = 'Antártica - Contacto';
+    const title = TITLES[location.pathname] || 'Antártica - Tienda de Libros';
     document.title = title;
-  }, [currentPage]);
+  }, [location.pathname]);
 
   return (
-    <Router>
-      <Header
-        userLoggedIn={userLoggedIn}
-        onNavigate={navigate}
-        onLogout={handleLogout}
-      />
-
+    <>
+      <Header />
       <Routes>
-        <Route path="/" element={currentPage === 'home' && <Home />} />
-        <Route path="/login" element={currentPage === 'login' && <Login />} />
-        <Route path="/register" element={currentPage === 'register' && <Register />} />
-        <Route path="/ayuda" element={currentPage === 'ayuda' && <Ayuda />} />
-  <Route path="/contact" element={currentPage === 'contact' && <Contact />} />
-        <Route path="/sobrenosotros" element={currentPage === 'sobrenosotros' && <SobreNosotros />} />
-        <Route path="/adminview" element={<AdminView />} />
+        <Route path="/" element={<Home />} />
+        <Route path="/cart" element={<ProtectedRoute allowedRoles={[ 'client', 'admin' ]}><Cart /></ProtectedRoute>} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/ayuda" element={<Ayuda />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/sobrenosotros" element={<SobreNosotros />} />
+        <Route
+          path="/adminview"
+          element={
+            <ProtectedRoute allowedRoles={[ 'admin' ]}>
+              <ErrorBoundary>
+                <AdminView />
+              </ErrorBoundary>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/books"
+          element={
+            <ProtectedRoute allowedRoles={[ 'admin' ]}>
+              <ErrorBoundary>
+                <AdminBooks />
+              </ErrorBoundary>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/users"
+          element={
+            <ProtectedRoute allowedRoles={[ 'admin' ]}>
+              <ErrorBoundary>
+                <AdminUsers />
+              </ErrorBoundary>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/clients"
+          element={
+            <ProtectedRoute allowedRoles={[ 'admin' ]}>
+              <ErrorBoundary>
+                <ClienteView />
+              </ErrorBoundary>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute allowedRoles={[ 'client', 'admin' ]}>
+              <Profile />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
-    </Router>
+      <Footer />
+    </>
   );
 }
 
